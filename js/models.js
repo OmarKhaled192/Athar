@@ -220,8 +220,158 @@ function eagle() {
   return fit(g, 1);
 }
 
-const BUILDERS = { 'pioneer-10': pioneer, opportunity, ingenuity, eagle };
+const BUILDERS = { 'pioneer-10': pioneer, opportunity: characterOpportunity, ingenuity: characterIngenuity, eagle };
 export function buildModel(id) { return (BUILDERS[id] || eagle)(); }
+
+/* Character illustration shared by the story, record, and garden renderers. */
+function characterIngenuity() {
+  const g = new THREE.Group();
+  const mat = (color, metalness = 0.16, roughness = 0.48, emissive = 0) => new THREE.MeshStandardMaterial({ color, metalness, roughness, emissive, emissiveIntensity: emissive ? 0.16 : 0 });
+  const shell = mat(0xe9a24c, 0.34, 0.36), shellLight = mat(0xffc26b, 0.22, 0.42);
+  const blue = mat(0x37658e, 0.34, 0.25), glass = mat(0x17314a, 0.18, 0.2);
+  const dark = mat(0x20283a, 0.38, 0.46), rubber = mat(0x151b28, 0.08, 0.7);
+  const metal = mat(0xb9cad2, 0.72, 0.28), teal = mat(0x42b6a5, 0.25, 0.36);
+  const ivory = mat(0xffe5a8, 0.08, 0.28, 0xffb742), orange = mat(0xf07837, 0.18, 0.4);
+  const cellMats = [mat(0x183459,0.35,0.32),mat(0x244976,0.35,0.32),mat(0xe89a38,0.25,0.38),mat(0x263b5c,0.35,0.32)];
+  const add = (geom, material, pos = [0,0,0], rot = [0,0,0], parent = g) => { const o = new THREE.Mesh(geom, material); o.position.set(...pos); o.rotation.set(...rot); parent.add(o); return o; };
+  const block = (w,h,d,r,bevel) => {
+    const s = new THREE.Shape();
+    s.moveTo(-w/2+r,-h/2); s.lineTo(w/2-r,-h/2); s.quadraticCurveTo(w/2,-h/2,w/2,-h/2+r);
+    s.lineTo(w/2,h/2-r); s.quadraticCurveTo(w/2,h/2,w/2-r,h/2); s.lineTo(-w/2+r,h/2);
+    s.quadraticCurveTo(-w/2,h/2,-w/2,h/2-r); s.lineTo(-w/2,-h/2+r); s.quadraticCurveTo(-w/2,-h/2,-w/2+r,-h/2);
+    const depth = Math.max(0.04,d-bevel*2);
+    const geom = new THREE.ExtrudeGeometry(s,{depth,bevelEnabled:true,bevelSegments:2,steps:1,bevelSize:bevel,bevelThickness:bevel,curveSegments:5});
+    geom.translate(0,0,-depth/2); return geom;
+  };
+  const ball = (radius, material, pos, scale = [1,1,1], parent = g) => { const o = add(new THREE.SphereGeometry(radius,18,12),material,pos,[0,0,0],parent); o.scale.set(...scale); return o; };
+  const segment = (a,b,radius,material,parent=g) => {
+    const start = new THREE.Vector3(...a), end = new THREE.Vector3(...b), delta = new THREE.Vector3().subVectors(end,start);
+    const o = add(new THREE.CylinderGeometry(radius*0.76,radius,delta.length(),12),material,[0,0,0],[0,0,0],parent);
+    o.position.copy(start).add(end).multiplyScalar(0.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize()); return o;
+  };
+  const tube = (points,radius,material,parent=g) => {
+    const curve = new THREE.CatmullRomCurve3(points.map(p=>new THREE.Vector3(...p)));
+    return add(new THREE.TubeGeometry(curve,24,radius,8,false),material,[0,0,0],[0,0,0],parent);
+  };
+
+  // Rounded, friendly body and dark blue face screen.
+  add(block(.88,.64,.58,.13,.045),shell,[0,.02,0]);
+  add(block(.74,.49,.045,.105,.014),blue,[0,.055,.315]);
+  add(block(.64,.39,.025,.082,.01),glass,[0,.06,.344]);
+  ball(.052,ivory,[-.145,.115,.37],[1,1.12,.65]); ball(.052,ivory,[.145,.115,.37],[1,1.12,.65]);
+  ball(.018,mat(0xffffff,0,0.18),[-.16,.136,.383],[1,1,.6]); ball(.018,mat(0xffffff,0,0.18),[.13,.136,.383],[1,1,.6]);
+  const smile = new THREE.CatmullRomCurve3([new THREE.Vector3(-.095,-.045,.375),new THREE.Vector3(0,-.095,.38),new THREE.Vector3(.095,-.045,.375)]);
+  add(new THREE.TubeGeometry(smile,18,.012,8,false),ivory);
+  // Tiny status lights and cheeks give the face the illustrated expression.
+  for (const [x,c] of [[-.24,0x57e5bc],[-.08,0xf6c65d],[.08,0xff785f],[.24,0x67d8c4]]) ball(.028,mat(c,0.1,0.25,c),[x,.36,.31]);
+  ball(.045,orange,[-.45,.01,.02],[.65,.8,.65]); ball(.045,orange,[.45,.01,.02],[.65,.8,.65]);
+  // Solar array with individual blue and amber photovoltaic cells.
+  add(new THREE.BoxGeometry(1.08,.075,.68),dark,[0,.57,0]);
+  add(new THREE.BoxGeometry(1.0,.018,.60),metal,[0,.618,0]);
+  for(let row=0;row<3;row++) for(let col=0;col<6;col++) {
+    const x=-.415+col*.166, z=-.24+row*.16, color=cellMats[(row*5+col*3)%cellMats.length];
+    add(new THREE.BoxGeometry(.151,.012,.145),color,[x,.634,z]);
+  }
+  // Coaxial rotors, orange blade tips, mast collars and antenna cap.
+  segment([0,.34,0],[0,.61,0],.04,metal);
+  segment([0,.61,0],[0,1.31,0],.038,metal);
+  add(new THREE.CylinderGeometry(.105,.11,.08,16),orange,[0,.77,0]);
+  const rotorStack = new THREE.Group(); g.add(rotorStack);
+  const rotors=[];
+  for (let i=0;i<2;i++) {
+    const rotor = new THREE.Group(); rotor.position.y=1.22+i*.105; rotor.rotation.y=i*.08; rotor.userData.spin=i===0?1:-1; rotorStack.add(rotor); rotors.push(rotor);
+    add(new THREE.CylinderGeometry(.075,.075,.065,16),metal,[0,0,0],[0,0,0],rotor);
+    add(new THREE.BoxGeometry(2.15,.045,.105),dark,[0,.018,0],[0,0,0],rotor);
+    for(const x of [-.96,.96]) add(new THREE.BoxGeometry(.22,.05,.12),orange,[x,.021,0],[0,0,0],rotor);
+    add(new THREE.BoxGeometry(2.04,.012,.035),mat(0x38445a,.15,.5),[0,.044,0],[0,0,0],rotor);
+  }
+  g.userData.rotors=rotors;
+  // Four splayed landing legs with orange joints and broad feet.
+  for(const sx of [-1,1]) for(const sz of [-1,1]) {
+    const knee=[sx*.48,-.34,sz*.25], shoulder=[sx*.34,-.17,sz*.19], foot=[sx*.68,-.75,sz*.38];
+    ball(.105,shellLight,shoulder,[1,.8,1]);
+    segment(shoulder,knee,.055,orange); ball(.09,metal,knee,[1,1,1]);
+    segment(knee,foot,.045,dark); segment([foot[0],foot[1]+.03,foot[2]],[foot[0],foot[1]-.035,foot[2]],.072,orange);
+    ball(.12,rubber,[foot[0],-.79,foot[2]],[1.35,.42,.9]);
+  }
+  // Visible cable loops on the sides, a small camera cheek, and antenna details.
+  for(const sx of [-1,1]) {
+    tube([[sx*.4,.2,.08],[sx*.55,.2,.02],[sx*.59,.04,-.03],[sx*.5,-.08,-.08]],.025,teal);
+    ball(.06,orange,[sx*.45,.18,.05],[.8,1,1]);
+  }
+  segment([-.28,.32,-.18],[-.36,.48,-.21],.018,metal);
+  ball(.035,orange,[-.36,.49,-.21]);
+  return g;
+}
+
+/* Friendly Opportunity rover illustration shared by the story, record, and garden. */
+function characterOpportunity() {
+  const g = new THREE.Group();
+  const mat = (color, metalness = .18, roughness = .46) => new THREE.MeshStandardMaterial({ color, metalness, roughness });
+  const gold = mat(0xc9782e,.32,.42), goldLight = mat(0xf0a447,.24,.4), goldDark = mat(0x754321,.3,.5);
+  const blue = mat(0x172b52,.42,.3), blueCell = [mat(0x18375c,.4,.3),mat(0x244c78,.4,.3),mat(0x101f3d,.4,.3)];
+  const metal = mat(0x9ba8b6,.72,.3), dark = mat(0x252a35,.45,.42), rubber = mat(0x302b2a,.06,.76), glass = mat(0x18263a,.25,.18);
+  const ivory = mat(0xffd993,.1,.3), red = mat(0xe85b47,.18,.35), teal = mat(0x4cc7b1,.22,.34);
+  const add = (geom, material, pos=[0,0,0], rot=[0,0,0], parent=g) => { const o=new THREE.Mesh(geom,material); o.position.set(...pos); o.rotation.set(...rot); parent.add(o); return o; };
+  const ball = (radius,material,pos,scale=[1,1,1]) => { const o=add(new THREE.SphereGeometry(radius,18,12),material,pos); o.scale.set(...scale); return o; };
+  const segment = (a,b,radius,material,parent=g) => { const start=new THREE.Vector3(...a), end=new THREE.Vector3(...b), delta=new THREE.Vector3().subVectors(end,start); const o=add(new THREE.CylinderGeometry(radius*.78,radius,delta.length(),12),material,[0,0,0],[0,0,0],parent); o.position.copy(start).add(end).multiplyScalar(.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),delta.normalize()); return o; };
+
+  // Warm, faceted rover body with a broad dark-blue photovoltaic deck.
+  add(new THREE.BoxGeometry(1.45,.5,1.02),gold,[0,.43,0]);
+  add(new THREE.BoxGeometry(1.34,.12,.94),goldLight,[0,.72,0]);
+  add(new THREE.BoxGeometry(1.28,.055,.88),blue,[0,.81,0]);
+  // Fold-out solar wings on both sides, tiled into visible cells.
+  for(const sx of [-1,1]) {
+    add(new THREE.BoxGeometry(.8,.075,.96),blue,[sx*1.04,.77,0],[0,0,sx*.035]);
+    for(let row=0;row<3;row++) for(let col=0;col<3;col++) add(new THREE.BoxGeometry(.23,.018,.27),blueCell[(row+col)%blueCell.length],[sx*(.76+col*.27),.82,-.31+row*.31]);
+    add(new THREE.BoxGeometry(.025,.1,1.0),metal,[sx*.65,.79,0]);
+  }
+  // Six chunky wheels, inner hubs, and raised tread blocks.
+  const wheelZ=[-.78,0,.78];
+  for(const sx of [-1,1]) for(const z of wheelZ) {
+    const wheel=add(new THREE.CylinderGeometry(.28,.28,.19,24),rubber,[sx*.88,.02,z],[0,0,Math.PI/2]);
+    add(new THREE.CylinderGeometry(.17,.17,.205,20),dark,[sx*.88,.02,z],[0,0,Math.PI/2]);
+    add(new THREE.CylinderGeometry(.105,.105,.218,16),metal,[sx*.88,.02,z],[0,0,Math.PI/2]);
+    add(new THREE.CylinderGeometry(.055,.055,.23,12),goldDark,[sx*.88,.02,z],[0,0,Math.PI/2]);
+    for(let i=0;i<12;i++) { const a=i*Math.PI/6; add(new THREE.BoxGeometry(.09,.075,.22),dark,[sx*.88,.02+Math.cos(a)*.255,z+Math.sin(a)*.255],[a,0,0]); }
+  }
+  // Visible rocker-bogie suspension links on each flank.
+  for(const sx of [-1,1]) {
+    segment([sx*.48,.37,-.05],[sx*.9,.25,-.78],.075,dark);
+    segment([sx*.48,.37,-.05],[sx*.9,.2,.78],.075,dark);
+    segment([sx*.9,.25,-.78],[sx*.9,.2,.78],.055,metal);
+    ball(.12,metal,[sx*.48,.37,-.05]);
+  }
+  // Mast with two friendly camera eyes and colored instrument housings.
+  segment([-.12,.76,.05],[-.12,1.45,.05],.075,metal);
+  add(new THREE.BoxGeometry(.7,.42,.28),goldLight,[-.12,1.63,.05]);
+  add(new THREE.BoxGeometry(.73,.16,.31),goldDark,[-.12,1.86,.05]);
+  for(const x of [-.32,.08]) {
+    ball(.145,dark,[x,1.62,.205],[1,1,.5]); ball(.105,glass,[x,1.62,.255],[1,1,.45]);
+    ball(.052,metal,[x,1.62,.282],[1,1,.55]); ball(.025,ivory,[x,1.62,.305],[1,1,.5]);
+  }
+  // Tiny colored status lenses across the top bar.
+  for(const [x,c] of [[-.38,red],[-.12,teal],[.17,mat(0xf4c64e,.18,.3)]]) ball(.052,c,[x,1.86,.22],[1,.8,.6]);
+  // High-gain dish, antenna, and colorful instrument cluster beside the mast.
+  const dish=new THREE.Group(); g.add(dish); dish.position.set(.57,1.12,-.28); dish.rotation.x=-.52;
+  add(new THREE.SphereGeometry(.42,24,12,0,Math.PI*2,0,1.15),mat(0xd4b58b,.35,.4),[0,0,0],[0,0,0],dish);
+  add(new THREE.SphereGeometry(.35,24,10,0,Math.PI*2,0,1.1),mat(0xe6cfaa,.22,.42),[0,.045,.025],[0,0,0],dish);
+  segment([0,.06,.06],[.16,.22,.2],.025,metal,dish);
+  segment([.43,.78,-.2],[.43,1.43,-.2],.025,metal); ball(.045,red,[.43,1.45,-.2]);
+  add(new THREE.BoxGeometry(.22,.35,.2),teal,[.58,.91,.08]);
+  for(let i=0;i<3;i++) ball(.035,[red,ivory,teal][i],[.58,.98-i*.09,.19]);
+  // Small articulated sampling arm with a two-prong gripper.
+  segment([.58,.39,.48],[.92,.28,.62],.055,metal); ball(.085,teal,[.92,.28,.62]);
+  segment([.92,.28,.62],[1.2,.18,.48],.045,goldLight); ball(.075,metal,[1.2,.18,.48]);
+  segment([1.2,.18,.48],[1.34,.12,.36],.035,teal);
+  segment([1.34,.12,.36],[1.5,.14,.32],.022,dark); segment([1.34,.12,.36],[1.45,.03,.48],.022,dark);
+  // Compact front bumper and a warm smile mark make the rover read as a character.
+  add(new THREE.BoxGeometry(.58,.08,.08),metal,[0,.36,.54]);
+  const smile=new THREE.CatmullRomCurve3([new THREE.Vector3(-.075,.5,.525),new THREE.Vector3(0,.46,.53),new THREE.Vector3(.075,.5,.525)]);
+  add(new THREE.TubeGeometry(smile,14,.012,8,false),ivory);
+  g.position.y=.14; g.rotation.y=-.3;
+  return g;
+}
 
 /** Per-frame model animation (e.g., Ingenuity rotors). */
 export function animateModel(model, dt) {
@@ -252,7 +402,11 @@ export class Preview {
   attach(el, id) {
     this.detach(); this.el = el;
     if (this.model) { this.pivot.remove(this.model); }
-    this.model = buildModel(id); this.pivot.add(this.model);
+    // Keep the established 3D garden models unchanged. The story and record
+    // preview uses character-style illustrations for Opportunity and Ingenuity.
+    this.model = id === 'ingenuity' ? characterIngenuity() : id === 'opportunity' ? characterOpportunity() : buildModel(id);
+    if (id === 'ingenuity') { this.model.scale.setScalar(0.76); this.model.position.y = 0.3; }
+    this.pivot.add(this.model);
     this.model.rotation.x = id === 'eagle' || id === 'ingenuity' ? 0.18 : 0.28;
     el.appendChild(this.renderer.domElement);
     this.ro = new ResizeObserver(() => this.resize()); this.ro.observe(el); this.resize();
