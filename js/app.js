@@ -4,7 +4,7 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const S = { chars: [], worlds: null, order: [], view: null, step: 0, scene: null, scenePromise: null, preview: null, previewPromise: null, previewOK: null, webgl: null, current: null, lastFocus: null, locale: 'en', i18n: {}, ar: {}, quizScore: 0, quizAnswered: new Set() };
+const S = { chars: [], worlds: null, order: [], view: null, step: 0, scene: null, scenePromise: null, preview: null, previewPromise: null, previewOK: null, webgl: null, current: null, lastFocus: null, locale: 'en', i18n: {}, ar: {}, quizScore: 0, quizAnswered: new Set(), starfield: null };
 const tx = key => S.i18n[key] || key;
 const ui = key => S.ar.ui?.[key] || key;
 function localizedRecord(c) {
@@ -258,7 +258,7 @@ async function boot() {
   }
   S.order = [...S.chars].sort((a, b) => (a.launchYear ?? 9999) - (b.launchYear ?? 9999));
   setLocale(S.locale);
-  drawStars(); renderSteles(); buildStory(); buildExploreUI(); bindGlobal();
+  S.starfield = drawStars(); renderSteles(); buildStory(); buildExploreUI(); bindGlobal();
   $('#boot').hidden = true;
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     navigator.serviceWorker.register('./sw.js').catch(error => console.error('Could not register the offline app shell.', error));
@@ -279,13 +279,153 @@ function renderSteles() {
   $$('.stele').forEach(b => b.addEventListener('click', () => openRecord(b.dataset.id, b)));
 }
 function drawStars() {
-  const c = $('#stars'), hero = c.parentElement; const dpr = Math.min(devicePixelRatio || 1, 2);
-  const paint = () => {
-    const w = hero.clientWidth, h = hero.clientHeight; c.width = w * dpr; c.height = h * dpr; c.style.width = w + 'px'; c.style.height = h + 'px';
-    const x = c.getContext('2d'); if (!x) return; x.scale(dpr, dpr); let s = 42; const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
-    for (let i = 0; i < Math.min(420, w * h / 2200); i++) { const a = 0.3 + r() * 0.7; x.fillStyle = r() > 0.8 ? `rgba(160,225,255,${a})` : `rgba(255,255,255,${a})`; x.beginPath(); x.arc(r() * w, r() * h, r() * 1.3 + 0.2, 0, 6.3); x.fill(); }
+  const canvas = $('#stars'), hero = canvas.parentElement, ctx = canvas.getContext('2d');
+  if (!ctx) return { setActive() {}, dispose() {} };
+  const motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileQuery = matchMedia('(max-width: 700px)');
+  const colors = ['#ffffff', '#dceaff', '#a8ddff', '#a5fff0'];
+  let width = 0, height = 0, dpr = 1, stars = [], meteor = null, nextMeteorAt = 0;
+  let frame = 0, active = false, disposed = false, lastFrame = 0;
+  let pointerX = 0, pointerY = 0, easedX = 0, easedY = 0;
+
+  const random = (min, max) => min + Math.random() * (max - min);
+  const motionAllowed = () => !motionQuery.matches;
+  const createStars = () => {
+    const lowPower = mobileQuery.matches || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
+    const maxStars = lowPower ? 220 : 420;
+    const count = Math.min(maxStars, Math.max(lowPower ? 90 : 180, Math.round(width * height / 2200)));
+    stars = Array.from({ length: count }, (_, i) => {
+      const layer = i < count * 0.56 ? 0 : i < count * 0.91 ? 1 : 2;
+      return {
+        x: random(0, width), y: random(0, height),
+        radius: random(layer === 2 ? 0.75 : 0.3, layer === 2 ? 1.55 : layer === 1 ? 1.1 : 0.85),
+        alpha: random(layer === 0 ? 0.24 : layer === 1 ? 0.34 : 0.5, layer === 0 ? 0.55 : layer === 1 ? 0.72 : 0.92),
+        speed: random([0.8, 2.3, 6][layer], [2.4, 6.2, 11][layer]),
+        drift: random(-0.45, 0.45) * [0.2, 0.55, 1][layer],
+        parallax: [2, 5, 9][layer],
+        phase: random(0, Math.PI * 2), twinkle: random(0.06, 0.25),
+        rate: random(0.45, 1.2), color: colors[Math.floor(Math.random() * colors.length)],
+        glow: Math.random() < 0.018
+      };
+    });
   };
-  paint(); let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(paint, 200); });
+  const resize = () => {
+    if (disposed) return;
+    const rect = hero.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const nextDpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (width === rect.width && height === rect.height && dpr === nextDpr) return;
+    width = rect.width; height = rect.height; dpr = nextDpr;
+    canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    createStars();
+    render(performance.now(), 0, false);
+  };
+  const drawMeteor = (now, delta) => {
+    if (!meteor && now >= nextMeteorAt) {
+      const speed = random(250, 330), angle = Math.PI * random(0.2, 0.32);
+      meteor = {
+        x: random(width * 0.35, width + 60), y: random(-30, height * 0.36),
+        vx: -Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
+        length: random(75, 135), started: now, duration: random(650, 1050)
+      };
+    }
+    if (!meteor) return;
+    const elapsed = now - meteor.started;
+    if (elapsed >= meteor.duration) {
+      meteor = null; nextMeteorAt = now + random(18000, 34000); return;
+    }
+    meteor.x += meteor.vx * delta; meteor.y += meteor.vy * delta;
+    const fade = Math.min(1, elapsed / 140, (meteor.duration - elapsed) / 220);
+    const tailX = meteor.x - meteor.vx / Math.hypot(meteor.vx, meteor.vy) * meteor.length;
+    const tailY = meteor.y - meteor.vy / Math.hypot(meteor.vx, meteor.vy) * meteor.length;
+    const trail = ctx.createLinearGradient(tailX, tailY, meteor.x, meteor.y);
+    trail.addColorStop(0, 'rgba(177,220,255,0)');
+    trail.addColorStop(1, 'rgba(207,239,255,0.72)');
+    ctx.globalAlpha = Math.max(0, fade) * 0.7;
+    ctx.strokeStyle = trail; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(tailX, tailY); ctx.lineTo(meteor.x, meteor.y); ctx.stroke();
+    ctx.globalAlpha = 1;
+  };
+  function render(now, delta, moving) {
+    if (!width || !height) return;
+    ctx.clearRect(0, 0, width, height);
+    const ease = 1 - Math.exp(-delta * 2);
+    easedX += (pointerX - easedX) * ease; easedY += (pointerY - easedY) * ease;
+    for (const star of stars) {
+      if (moving) {
+        star.y += star.speed * delta;
+        star.x += star.drift * star.speed * delta;
+        if (star.y > height + star.radius) { star.y = -star.radius; star.x = random(0, width); }
+        if (star.x < -star.radius) star.x = width + star.radius;
+        else if (star.x > width + star.radius) star.x = -star.radius;
+      }
+      const x = star.x + easedX * star.parallax, y = star.y + easedY * star.parallax;
+      const twinkle = moving ? 1 - star.twinkle / 2 + Math.sin(now * 0.001 * star.rate + star.phase) * star.twinkle / 2 : 1;
+      const alpha = Math.max(0, Math.min(1, star.alpha * twinkle));
+      if (star.glow) {
+        ctx.globalAlpha = alpha * 0.09; ctx.fillStyle = star.color;
+        ctx.beginPath(); ctx.arc(x, y, star.radius * 4, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = alpha; ctx.fillStyle = star.color;
+      ctx.beginPath(); ctx.arc(x, y, star.radius, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+    if (moving) drawMeteor(now, delta);
+  }
+  const stop = () => { if (frame) cancelAnimationFrame(frame); frame = 0; lastFrame = 0; };
+  const animate = now => {
+    frame = 0;
+    if (disposed || !active || document.hidden || !motionAllowed()) return;
+    if (lastFrame && now - lastFrame < 16) { frame = requestAnimationFrame(animate); return; }
+    const delta = lastFrame ? Math.min((now - lastFrame) / 1000, 0.05) : 0;
+    lastFrame = now; render(now, delta, true);
+    frame = requestAnimationFrame(animate);
+  };
+  const start = () => {
+    if (disposed || !active || document.hidden || !motionAllowed() || frame) return;
+    lastFrame = 0; meteor = null; nextMeteorAt = performance.now() + random(18000, 34000);
+    frame = requestAnimationFrame(animate);
+  };
+  const setActive = value => {
+    active = value;
+    if (active && motionAllowed() && !document.hidden) start();
+    else {
+      stop();
+      if (!motionAllowed()) { easedX = 0; easedY = 0; render(performance.now(), 0, false); }
+    }
+    if (active) resize();
+  };
+  const onPointerMove = event => {
+    if (event.pointerType !== 'mouse') return;
+    const rect = hero.getBoundingClientRect();
+    pointerX = (event.clientX - rect.left) / rect.width - 0.5;
+    pointerY = (event.clientY - rect.top) / rect.height - 0.5;
+  };
+  const onPointerLeave = () => { pointerX = 0; pointerY = 0; };
+  const onVisibilityChange = () => document.hidden ? stop() : start();
+  const onMotionChange = () => setActive(active);
+  const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(resize) : null;
+  resizeObserver?.observe(hero);
+  if (!resizeObserver) window.addEventListener('resize', resize);
+  hero.addEventListener('pointermove', onPointerMove, { passive: true });
+  hero.addEventListener('pointerleave', onPointerLeave, { passive: true });
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  motionQuery.addEventListener?.('change', onMotionChange);
+  resize();
+  if (motionQuery.matches) render(performance.now(), 0, false);
+
+  return {
+    setActive,
+    dispose() {
+      disposed = true; stop(); resizeObserver?.disconnect();
+      if (!resizeObserver) window.removeEventListener('resize', resize);
+      hero.removeEventListener('pointermove', onPointerMove);
+      hero.removeEventListener('pointerleave', onPointerLeave);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      motionQuery.removeEventListener?.('change', onMotionChange);
+    }
+  };
 }
 
 /* ---------- routing ---------- */
@@ -294,6 +434,7 @@ function route() {
   const view = ['home', 'story', 'explore'].includes(v) ? v : 'home';
   if (S.view === view && !arg) return;
   const prev = S.view; S.view = view; Speech.stop();
+  S.starfield?.setActive(view === 'home');
   $$('.view').forEach(el => { el.hidden = el.dataset.view !== view; });
   $$('[data-nav]').forEach(a => a.toggleAttribute('aria-current', a.dataset.nav === view));
   document.title = S.locale === 'ar' ? ui(view === 'home' ? 'titleHome' : view === 'story' ? 'titleStory' : 'titleExplore') : { home: 'ATHAR — Every Mission Leaves a Mark', story: 'The Story · ATHAR', explore: 'Explore the Garden · ATHAR' }[view];
@@ -589,7 +730,7 @@ function bindGlobal() {
       S.lastFocus?.focus?.({ preventScroll: true });
     });
   }
-  addEventListener('pagehide', () => { RecordNarration.dispose(); Speech.stop(); S.scene?.dispose(); S.preview?.dispose(); });
+  addEventListener('pagehide', () => { RecordNarration.dispose(); Speech.stop(); S.scene?.dispose(); S.preview?.dispose(); S.starfield?.dispose(); });
 }
 
 if (location.search.includes('debug')) window.__athar = S;

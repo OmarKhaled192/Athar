@@ -129,6 +129,35 @@ test('mobile has no horizontal overflow and passes axe', async ({ page }) => {
   const results = await new AxeBuilder({ page }).analyze(); expect(results.violations).toEqual([]);
 });
 
+test('hero starfield animates, resizes sharply, and honors reduced motion', async ({ page }) => {
+  await page.addInitScript(() => {
+    const clearRect = CanvasRenderingContext2D.prototype.clearRect;
+    CanvasRenderingContext2D.prototype.clearRect = function(...args) {
+      window.__starfieldFrames = (window.__starfieldFrames || 0) + 1;
+      return clearRect.apply(this, args);
+    };
+  });
+  await page.goto('/'); await expect(page.locator('#boot')).toBeHidden();
+  await expect.poll(() => page.evaluate(() => window.__starfieldFrames)).toBeGreaterThan(2);
+  const initialFrames = await page.evaluate(() => window.__starfieldFrames);
+  await page.waitForTimeout(120);
+  expect(await page.evaluate(() => window.__starfieldFrames)).toBeGreaterThan(initialFrames + 2);
+  await expect(page.locator('#stars')).toHaveCSS('pointer-events', 'none');
+
+  await page.setViewportSize({ width: 390, height: 780 }); await page.waitForTimeout(100);
+  const canvasSize = await page.locator('#stars').evaluate(canvas => ({
+    width: canvas.width,
+    expectedWidth: canvas.getBoundingClientRect().width * Math.min(devicePixelRatio, 2)
+  }));
+  expect(Math.abs(canvasSize.width - canvasSize.expectedWidth)).toBeLessThan(2);
+
+  await page.emulateMedia({ reducedMotion: 'reduce' }); await page.reload();
+  await expect(page.locator('#boot')).toBeHidden(); await page.waitForTimeout(150);
+  const reducedFrames = await page.evaluate(() => window.__starfieldFrames);
+  await page.waitForTimeout(150);
+  expect(await page.evaluate(() => window.__starfieldFrames)).toBe(reducedFrames);
+});
+
 test('file URL explains the local server requirement', async ({ page }) => {
   const filePath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../index.html'); await page.goto(pathToFileURL(filePath).href);
   await expect(page.locator('#app-error')).toBeVisible(); await expect(page.locator('#app-error-msg')).toContainText('file://');
