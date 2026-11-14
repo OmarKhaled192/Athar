@@ -1,0 +1,1 @@
+{"name":"athar-memorial-garden","private":true,"type":"module","scripts":{"test":"playwright test","test:e2e":"playwright test","lighthouse":"lhci autorun"},"devDependencies":{"@axe-core/playwright":"^4.10.2","@playwright/test":"^1.51.0","@lhci/cli":"^0.14.0"}}

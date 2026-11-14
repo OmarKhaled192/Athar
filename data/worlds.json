@@ -1,0 +1,29 @@
+{
+  "worlds": [
+    {
+      "id": "moon",
+      "name": "The Moon",
+      "blurb": "Earth's natural satellite. In ATHAR, the Apollo 11 ascent stage is shown in lunar orbit.",
+      "filter": "moon"
+    },
+    {
+      "id": "mars",
+      "name": "Mars",
+      "blurb": "A cold, dusty, rocky planet. Two robot explorers in ATHAR worked here: a rover and a helicopter.",
+      "filter": "mars"
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "blurb": "Home. Every mission in this garden started here, and every signal was sent back here.",
+      "filter": null
+    },
+    {
+      "id": "deep_space",
+      "name": "Deep space",
+      "blurb": "The space between planets and beyond. Pioneer 10 is out here, not on Mars or the Moon.",
+      "filter": "deep_space"
+    }
+  ],
+  "disclaimer": "Educational visualization. Distances, sizes and positions are NOT to scale and are not an ephemeris."
+}

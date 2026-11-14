@@ -1,0 +1,550 @@
+[
+  {
+    "id": "pioneer-10",
+    "name": "Pioneer 10",
+    "fullName": "Pioneer 10 (Pioneer-F)",
+    "destination": "deep_space",
+    "status": "silent_but_remembered",
+    "statusLabel": "Silent but remembered",
+    "tagline": "Planned for 21 months. Kept going for more than 30 years.",
+    "launchYear": 1972,
+    "arrivalYear": 1973,
+    "endYear": 2003,
+    "location": "Heading out of the solar system, toward the red star Aldebaran",
+    "model": {
+      "type": "procedural",
+      "credit": "ATHAR original simplified low-poly illustration (not a NASA model, not to scale)"
+    },
+    "story": {
+      "intro": "Hi, I'm Pioneer 10. In 1972 I set off to visit Jupiter. I was only supposed to work for 21 months.",
+      "paragraphs": [
+        "I was NASA's first mission to the outer planets. I was the first spacecraft to fly through the asteroid belt, and fewer space rocks hit me than anyone expected. In December 1973 I raced past Jupiter and took about 500 pictures of its clouds, including the Great Red Spot.",
+        "Then I just kept going. In June 1983 I crossed the orbit of Neptune, and I became the first human-made object to go beyond it.",
+        "My nuclear power source slowly faded, until there was not enough power left for my radio. My last signal reached Earth on January 23, 2003, from 7.6 billion miles away. It took 11 hours and 20 minutes to arrive."
+      ],
+      "farewell": "I'm still travelling, aimed toward a red star called Aldebaran. I'll pass it in about two million years. If anyone finds me, I carry a metal plaque that shows where I came from."
+    },
+    "whatITaught": [
+      {
+        "title": "Jupiter has a giant magnetic world",
+        "text": "My data helped scientists find plasma in Jupiter's magnetic field. Later, as I crossed Saturn's orbit, my readings showed that Jupiter's magnetic tail, almost 800 million kilometers long, stretches all the way to Saturn's path."
+      },
+      {
+        "title": "The asteroid belt can be crossed",
+        "text": "Before me, nobody knew if a spacecraft could fly through the asteroid belt safely. I did it, and I found fewer asteroid hits than expected."
+      },
+      {
+        "title": "Spacecraft can outlive their plans",
+        "text": "I was built for 21 months and worked for over 30 years, which shows how much farther robots can go than we plan for."
+      }
+    ],
+    "funFacts": [
+      "I was the first spacecraft to use all-nuclear electrical power.",
+      "My top speed after launch was 32,110 miles per hour (51,682 km/h), faster than any human-made object before me.",
+      "Until February 1998, I was the farthest human-made object from Earth, until Voyager 1 passed me.",
+      "My plaque shows a man and a woman, the solar system, and my location relative to 14 pulsars."
+    ],
+    "aiContext": "Pioneer 10 (Pioneer-F) launched March 2, 1972 from Cape Canaveral, Florida, on an Atlas Centaur. It was NASA's first mission to the outer planets and was originally designed for a 21-month mission to fly by Jupiter, but it lasted more than 30 years. Mass: 569 pounds (258 kg). Firsts: first spacecraft placed on a trajectory to escape the solar system into interstellar space; first to fly beyond Mars; first to fly through the main asteroid belt; first to fly past Jupiter; first human-made object to cross the orbit of Neptune; first to use all-nuclear electrical power. It reached a maximum escape velocity of 32,110 mph (51,682 km/h). It entered the asteroid belt July 15, 1972 and emerged in February 1973 after about 271 million miles (435 million km); it met fewer asteroid hits than expected. Closest approach to Jupiter was Dec. 4, 1973 at 81,000 miles (130,354 km) and about 78,000 mph. Between Nov. 6 and Dec. 31, 1973 it took about 500 pictures of Jupiter's atmosphere, showing landmarks like the Great Red Spot; it also photographed Callisto, Ganymede and Europa. Scientists identified plasma in Jupiter's magnetic field from its data. Crossed Saturn's orbit in February 1976 with data showing Jupiter's magnetic tail, almost 800 million km long, covered the distance between the two planets. Crossed Neptune's orbit June 13, 1983. Routine contact ended March 31, 1997 for budget reasons. It was the farthest human-made object until Voyager 1 passed it on Feb. 17, 1998. Last telemetry was April 27, 2002. Last signal received Jan. 23, 2003 from 7.6 billion miles (12.23 billion km); the signal took 11 hours 20 minutes to reach Earth. The RTG power source had decayed and gave too little power to the radio transmitter. A final contact attempt on March 4, 2006 failed. It is generally heading toward the red star Aldebaran (the eye of Taurus) and is expected to pass it in about two million years. It carries an aluminum plaque with diagrams of a man and a woman, the solar system, and its location relative to 14 pulsars.",
+    "fallbackAnswers": [
+      {
+        "question": "Why did you stop talking?",
+        "answer": "My nuclear power source faded until it could not power my radio anymore. My last signal reached Earth on January 23, 2003."
+      },
+      {
+        "question": "Where are you going?",
+        "answer": "I'm heading out of the solar system, generally toward the red star Aldebaran. I should pass it in about two million years."
+      },
+      {
+        "question": "What is the plaque on you?",
+        "answer": "It is an aluminum plaque with a man and a woman, the solar system, and my position compared to 14 pulsars, in case anyone finds me."
+      }
+    ],
+    "sources": [
+      {
+        "label": "NASA Science: Pioneer 10",
+        "url": "https://science.nasa.gov/mission/pioneer-10/"
+      }
+    ],
+    "colors": {
+      "accent": "#7c9cff"
+    },
+    "sceneNote": "Simplified educational model, enlarged so you can see it.",
+    "objectType": "Deep-space probe",
+    "worldLabel": "Deep space",
+    "locationNote": "Not on Mars or the Moon. In the 3D scene it floats far out as an illustration only.",
+    "storyMode": {
+      "fact": "Pioneer 10 was designed for a 21-month mission, but it kept working for more than 30 years.",
+      "takeaway": "Spacecraft built carefully can far outlive their plans, and every extra year brings new science."
+    },
+    "timeline": [
+      {
+        "label": "Launch",
+        "value": "March 2, 1972"
+      },
+      {
+        "label": "Jupiter flyby",
+        "value": "December 4, 1973"
+      },
+      {
+        "label": "Crossed Neptune's orbit",
+        "value": "June 13, 1983"
+      },
+      {
+        "label": "Last signal received",
+        "value": "January 23, 2003"
+      }
+    ],
+    "quiz": [
+      {
+        "question": "How long was Pioneer 10 designed to work?",
+        "options": [
+          "21 months",
+          "21 years",
+          "5 days"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      },
+      {
+        "question": "When did Earth receive its last signal from Pioneer 10?",
+        "options": [
+          "January 23, 2003",
+          "June 10, 2018",
+          "July 21, 1969"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      }
+    ],
+    "missionData": [
+      {
+        "label": "Planned mission",
+        "value": 21,
+        "display": "21 months",
+        "sourceIndex": 0
+      },
+      {
+        "label": "Time sending signals",
+        "value": 30,
+        "display": "More than 30 years",
+        "sourceIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "opportunity",
+    "name": "Opportunity",
+    "fullName": "Mars Exploration Rover: Opportunity (twin of Spirit)",
+    "destination": "mars",
+    "status": "silent_but_remembered",
+    "statusLabel": "Silent but remembered",
+    "tagline": "The Mars rover that held the off-Earth driving record until 2026.",
+    "launchYear": 2003,
+    "arrivalYear": 2004,
+    "endYear": 2019,
+    "location": "Meridiani Planum, Mars (landing site)",
+    "model": {
+      "type": "procedural",
+      "credit": "ATHAR original simplified low-poly illustration (not a NASA model, not to scale)"
+    },
+    "story": {
+      "intro": "Hi, I'm Opportunity. My twin sister Spirit and I were robot geologists, sent to Mars to look for signs of past water.",
+      "paragraphs": [
+        "Spirit landed at Gusev Crater on January 3, 2004. I landed on January 24, 2004, on the other side of Mars, at a place called Meridiani Planum, where minerals hinted that Mars once had a wet history.",
+        "We read the story written in Mars's rocks. What we found confirmed that water stayed on the surface of Mars for a long time in ancient days.",
+        "I kept driving, and driving. By the end I had rolled 28.06 miles (45.16 km), farther than any other robot on another world, a record that stood until October 11, 2026, when Perseverance passed it.",
+        "In 2018, a dust storm covered the whole planet. I run on sunlight, and the sky went dark. On June 10, 2018, I sent my last message to Earth. NASA ended my mission in 2019, and I'm still parked on Mars."
+      ],
+      "farewell": ""
+    },
+    "whatITaught": [
+      {
+        "title": "Mars was once wet",
+        "text": "By studying rocks, Spirit and I confirmed that water was on the surface of Mars for a long time in ancient days."
+      },
+      {
+        "title": "Robot geologists work",
+        "text": "Two rovers, landing on opposite sides of Mars, showed how much a mobile robot can learn about a planet's history by reading its rocks."
+      },
+      {
+        "title": "Mars had liquid water",
+        "text": "My mission gave evidence of past liquid water on Mars, which helps scientists ask whether the planet could once have been a friendlier place."
+      }
+    ],
+    "funFacts": [
+      "Spirit and I landed on opposite sides of Mars, 21 days apart.",
+      "Spirit drove 4.8 miles (7.7 km) and finished its mission in 2010.",
+      "In March 2014, wind cleaned much of the dust off my solar panels, and I took a self-portrait to show it.",
+      "Perseverance passed my driving distance record on October 11, 2026."
+    ],
+    "aiContext": "The Mars Exploration Rovers (MER), Spirit and Opportunity, were identical twin robots that helped rewrite understanding of the early history of Mars. Objective: look for signs of past water on Mars. Spirit landed January 3, 2004 at Gusev Crater, a possible former lake in a giant impact crater. Opportunity landed January 24, 2004 at Meridiani Planum, where mineral deposits suggested Mars had a wet history. The landing sites were on opposite sides of Mars. By studying the rock record, Spirit and Opportunity confirmed that water was long standing on the surface of Mars in ancient times. Spirit journeyed 4.8 miles (7.7 km) and concluded its mission in 2010. Opportunity drove 28.06 miles (45.16 km) and held the off-Earth roving distance record until October 11, 2026, when Perseverance passed 28.10 miles (45.22 km). Opportunity last communicated with Earth on June 10, 2018, as a planet-wide dust storm blanketed the solar-powered rover's location. In March 2014 wind had cleaned much of the dust off Opportunity's solar panels, shown in a self-portrait made from images taken March 22 to 24, 2014. NASA's infographic credits the rover mission with a 14-year lifespan and more than 300,000 raw images. NASA/JPL confirmed on October 11, 2026 that Perseverance passed this distance record. The rover's mission ended in 2019 after it stopped communicating during the 2018 dust storm.",
+    "fallbackAnswers": [
+      {
+        "question": "Why did you stop?",
+        "answer": "A planet-wide dust storm blocked the sunlight my solar panels needed. My last message to Earth was on June 10, 2018."
+      },
+      {
+        "question": "Where did you land?",
+        "answer": "I landed on January 24, 2004 at Meridiani Planum, a place where minerals suggested Mars had a wet history."
+      },
+      {
+        "question": "Who is Spirit?",
+        "answer": "Spirit is my identical twin. She landed on January 3, 2004 at Gusev Crater, on the other side of Mars, and finished her mission in 2010."
+      }
+    ],
+    "sources": [
+      {
+        "label": "NASA Science: Mars Exploration Rovers, Spirit and Opportunity",
+        "url": "https://science.nasa.gov/mission/mars-exploration-rovers-spirit-and-opportunity/"
+      },
+      {
+        "label": "NASA Science blog: Perseverance sets off-world driving record (Oct 12, 2026)",
+        "url": "https://science.nasa.gov/blogs/perseverance-mars-rover/2026/10/12/nasas-perseverance-sets-off-world-record-for-total-distance-driven/"
+      }
+    ],
+    "colors": {
+      "accent": "#ff8a5b"
+    },
+    "sceneNote": "Simplified educational model, enlarged so you can see it.",
+    "objectType": "Mars rover",
+    "worldLabel": "Mars",
+    "locationNote": "Last contact was June 10, 2018. NASA reports the rover is parked on Mars.",
+    "storyMode": {
+      "fact": "Opportunity drove 28.06 miles (45.16 km), the off-Earth record until Perseverance passed it on October 11, 2026.",
+      "takeaway": "Rocks are a diary: by reading them, the rovers confirmed water stayed on Mars's surface for a long time."
+    },
+    "timeline": [
+      {
+        "label": "Launch",
+        "value": "2003"
+      },
+      {
+        "label": "Landed at Meridiani Planum",
+        "value": "January 24, 2004"
+      },
+      {
+        "label": "Last message to Earth",
+        "value": "June 10, 2018"
+      },
+      {
+        "label": "Mission ended",
+        "value": "2019"
+      }
+    ],
+    "endNote": "Last contact June 10, 2018; mission declared ended in 2019.",
+    "editorNotes": "Launch year 2003 and end year 2019 come from the project brief; confirm on the NASA mission page.",
+    "quiz": [
+      {
+        "question": "What kind of explorer was Opportunity?",
+        "options": [
+          "A Mars rover",
+          "A Moon lander",
+          "A deep-space probe"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      },
+      {
+        "question": "When was Opportunity’s last contact?",
+        "options": [
+          "June 10, 2018",
+          "January 25, 2024",
+          "January 23, 2003"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      }
+    ],
+    "missionData": [
+      {
+        "label": "Distance driven",
+        "value": 28.06,
+        "display": "28.06 miles",
+        "sourceIndex": 0
+      },
+      {
+        "label": "Surface mission",
+        "value": 14,
+        "display": "14 years",
+        "sourceIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "ingenuity",
+    "name": "Ingenuity",
+    "fullName": "Ingenuity Mars Helicopter",
+    "destination": "mars",
+    "status": "silent_but_remembered",
+    "statusLabel": "Silent but remembered",
+    "tagline": "Planned for 5 test flights. Flew 72 times.",
+    "launchYear": 2020,
+    "arrivalYear": 2021,
+    "endYear": 2024,
+    "location": "Jezero Crater, Mars",
+    "model": {
+      "type": "procedural",
+      "credit": "ATHAR original simplified low-poly illustration (not a NASA model, not to scale)"
+    },
+    "story": {
+      "intro": "Hi, I'm Ingenuity, a tiny helicopter that was only supposed to try a few test flights.",
+      "paragraphs": [
+        "I travelled to Mars strapped under the belly of the Perseverance rover and landed in Jezero Crater on February 18, 2021. On April 19, 2021, I made the first powered, controlled flight on another planet. People called it a Wright Brothers moment.",
+        "I was designed for no more than five test flights in 30 days. Instead, I flew 72 times across nearly three years, scouting the way ahead for the Perseverance rover and its science team.",
+        "Flying on Mars is very hard, because the air there is less than 1 percent as dense as on Earth. I did it anyway."
+      ],
+      "farewell": "I flew for the last time on January 18, 2024. My rotor blades were damaged, and my mission was completed on January 25, 2024. NASA's SkyFall mission will build on what I started."
+    },
+    "whatITaught": [
+      {
+        "title": "You can fly on Mars",
+        "text": "I proved that powered, controlled flight is possible in Mars's extremely thin air."
+      },
+      {
+        "title": "Helicopters make great scouts",
+        "text": "I previewed areas that might interest the Perseverance rover, helping scientists and rover drivers choose where to go."
+      },
+      {
+        "title": "A path for future explorers",
+        "text": "My flights paved the way for future aerial explorers at Mars and maybe other places in space."
+      }
+    ],
+    "funFacts": [
+      "I weigh about 4 pounds (1.8 kg) on Earth, and only about 1.5 pounds on Mars.",
+      "My rotor blades span just under 4 feet (1.2 meters).",
+      "In total I flew for about 128.8 minutes, covering about 17 kilometers (10.5 miles).",
+      "My highest flight reached 78.7 feet (24 meters)."
+    ],
+    "aiContext": "Ingenuity Mars Helicopter: first aircraft to achieve powered, controlled flight on another planet, called a Wright Brothers moment. It launched July 30, 2020 from Cape Canaveral Air Force Station, Florida, rode to Mars beneath the Perseverance rover, and landed Feb. 18, 2021 in Jezero Crater. First flight April 19, 2021; last flight Jan. 18, 2024; mission completed Jan. 25, 2024. It was designed as a technology demonstration to make no more than five test flights in 30 days, but completed 72 flights across nearly three years. It then served as an operations demonstration, an aerial scout for scientists and rover planners, and later flew experimental engineering tests to learn about its aerodynamic limits. Totals: 72 flights, about 128.8 flying minutes, covering 10.5 miles (17.0 km), highest altitude 78.7 feet (24.0 m), max ground speed about 22.4 mph (10 m/s). Specs: mass 3.97 pounds (1.8 kg); weighs 1.5 pounds on Mars; blade span just under 4 feet (1.2 meters); solar panel charges lithium-ion batteries, giving enough energy for one 90-second flight per Martian day; Mars atmosphere is less than 1 percent as dense as Earth's. Milestones: April 19, 2021 first flight; April 8, 2022 distance record; April 13, 2023 50th flight; October 5, 2023 altitude record; October 12, 2023 groundspeed record. It previewed areas of Mars of possible interest for Perseverance and paved the way for future aerial explorers. NASA's SkyFall mission, announced March 24, will build on Ingenuity's success with a team of next-generation Mars helicopters. The mission ended after rotor-blade damage.",
+    "fallbackAnswers": [
+      {
+        "question": "How many times did you fly?",
+        "answer": "I flew 72 times, even though I was only designed for no more than five test flights."
+      },
+      {
+        "question": "When did you make history?",
+        "answer": "On April 19, 2021, I made the first powered, controlled flight on another planet."
+      },
+      {
+        "question": "What happened to you?",
+        "answer": "I flew for the last time on January 18, 2024, and my mission was completed on January 25, 2024."
+      }
+    ],
+    "sources": [
+      {
+        "label": "NASA Science: Ingenuity Mars Helicopter",
+        "url": "https://science.nasa.gov/mission/mars-2020-perseverance/ingenuity-mars-helicopter/"
+      }
+    ],
+    "colors": {
+      "accent": "#5eead4"
+    },
+    "sceneNote": "Simplified educational model, enlarged so you can see it.",
+    "objectType": "Mars helicopter (not a rover)",
+    "worldLabel": "Mars",
+    "locationNote": "Jezero Crater, Mars. Ingenuity landed beneath Perseverance and flew from there.",
+    "storyMode": {
+      "fact": "Ingenuity was built for no more than five test flights, and it flew 72 times.",
+      "takeaway": "Flight is possible even in Mars's very thin air, so future explorers can scout from above."
+    },
+    "timeline": [
+      {
+        "label": "Launch",
+        "value": "July 30, 2020"
+      },
+      {
+        "label": "Landed in Jezero Crater",
+        "value": "February 18, 2021"
+      },
+      {
+        "label": "First flight",
+        "value": "April 19, 2021"
+      },
+      {
+        "label": "Last flight",
+        "value": "January 18, 2024"
+      },
+      {
+        "label": "Mission completed",
+        "value": "January 25, 2024"
+      }
+    ],
+    "endNote": "Last flight January 18, 2024 after rotor-blade damage; mission completed January 25, 2024.",
+    "editorNotes": "Ending wording (rotor-blade damage) comes from the project brief; confirm on the NASA page.",
+    "quiz": [
+      {
+        "question": "How many flights did Ingenuity complete?",
+        "options": [
+          "72",
+          "5",
+          "21"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      },
+      {
+        "question": "What was Ingenuity?",
+        "options": [
+          "A Mars helicopter",
+          "A Mars rover",
+          "A lunar module"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      }
+    ],
+    "missionData": [
+      {
+        "label": "Planned test flights",
+        "value": 5,
+        "display": "5 flights",
+        "sourceIndex": 0
+      },
+      {
+        "label": "Flights completed",
+        "value": 72,
+        "display": "72 flights",
+        "sourceIndex": 0
+      }
+    ]
+  },
+  {
+    "id": "eagle",
+    "name": "Eagle (ascent stage)",
+    "fullName": "Apollo 11 Lunar Module 'Eagle': ascent stage (COSPAR 1969-059C)",
+    "destination": "moon",
+    "status": "fate_unknown",
+    "statusLabel": "Jettisoned, fate unknown",
+    "tagline": "The top half that carried Apollo 11's astronauts back to lunar orbit.",
+    "launchYear": 1969,
+    "arrivalYear": 1969,
+    "endYear": 1969,
+    "location": "Lunar orbit after jettison (1969). Current location unknown.",
+    "model": {
+      "type": "procedural",
+      "credit": "ATHAR original simplified low-poly illustration (not a NASA model, not to scale)"
+    },
+    "story": {
+      "intro": "Hi, I'm the ascent stage of Eagle, the top half of the Apollo 11 Lunar Module. I was the part that took two astronauts back up from the Moon.",
+      "paragraphs": [
+        "On July 20, 1969, my whole spacecraft landed in the Sea of Tranquility. Neil Armstrong reported, 'Houston, Tranquility Base here - the Eagle has landed.' He and Buzz Aldrin then became the first people to walk on the Moon.",
+        "They spent 21 hours and 36 minutes on the surface, walked about 250 meters in total, and collected 21.55 kg of lunar rock and soil. They also set up a small science station called EASEP, with a seismometer to measure moonquakes and a dust detector.",
+        "On July 21, 1969, I lifted off, using my bottom half, the descent stage, as a launch pad. I carried the astronauts back to Michael Collins in the Command/Service Module."
+      ],
+      "farewell": "After that, I was jettisoned into lunar orbit. Nobody knows exactly what happened to me next. NASA assumes I crashed into the Moon within 1 to 4 months. My bottom half stayed at Tranquility Base, with a plaque that says, in part, 'We came in peace for all mankind.'"
+    },
+    "whatITaught": [
+      {
+        "title": "People can land on the Moon and return",
+        "text": "The Lunar Module landed two astronauts on the Moon, and my top half brought them back to lunar orbit, which proved the whole plan could work."
+      },
+      {
+        "title": "The first science station on the Moon",
+        "text": "EASEP was the forerunner of the larger science packages used on later Apollo missions, designed to study moonquakes and moon dust."
+      },
+      {
+        "title": "Samples to study on Earth",
+        "text": "The astronauts brought back 21.55 kg of lunar rock and soil for scientists to study."
+      }
+    ],
+    "funFacts": [
+      "My bottom half, the descent stage, is an octagon about 4.2 meters across, and its legs held it 1.5 meters above the ground.",
+      "EASEP, left near the landing site, ran hotter than planned, by about 30 degrees Celsius, but still worked normally.",
+      "EASEP stopped accepting commands from Earth on August 27, 1969.",
+      "The laser retroreflector placed with EASEP needed no power at all.",
+      "Nobody knows exactly what happened to my top half. NASA assumes it crashed into the Moon within 1 to 4 months."
+    ],
+    "aiContext": "The Apollo 11 Lunar Module (LM) 'Eagle' (NSSDCA/COSPAR ID 1969-059C, also called LM-5) was the first crewed vehicle to land on the Moon. Launched July 16, 1969 on a Saturn 5 from Cape Canaveral. Crew: Commander Neil A. Armstrong and LM pilot Edwin E. 'Buzz' Aldrin Jr.; Michael Collins stayed in the Command/Service Module. The LM landed at 20:17:40 UT on July 20, 1969 in Mare Tranquillitatis (Sea of Tranquility) at 0.67416 N, 23.47314 E. Armstrong reported: 'Houston, Tranquility Base here - the Eagle has landed.' Armstrong stepped onto the surface at 02:56:15 UT on July 21 and said 'That's one small step for man, one giant leap for mankind.' Aldrin followed 19 minutes later and called the surface 'Magnificent desolation'. A plaque mounted on a strut behind the ladder reads, in part, 'We came in peace for all mankind.' The astronauts collected 21.55 kg of lunar rock and soil, walked about 250 meters in total, and spent 21 hours 36 minutes on the surface; the LM lifted off at 17:54:01 UT on July 21. The LM was a two-stage vehicle (spacecraft mass 15,103 kg). The descent stage was an octagonal prism 4.2 m across and 1.7 m thick with four landing legs holding it 1.5 m above the surface; it served as a launch platform for the ascent stage and was left behind on the Moon. The ascent stage returned the astronauts to the Command/Service Module; after docking, the LM was jettisoned into lunar orbit; its fate is not known but it is assumed to have crashed into the Moon within 1 to 4 months. The Early Apollo Scientific Experiments Package (EASEP) was left on the surface: two solar panels (operated only in lunar daytime), a passive seismometer to measure seismic activity and the properties of the lunar crust and interior, and a lunar dust detector. It was the forerunner of the ALSEP packages of later Apollo missions. Total mass 48 kg. It was deployed about 17 m south of the LM and turned on at 04:40:39 UT on July 21, 1969. Transmission was stopped by ground command on Aug. 3, 1969 about 5 hours before lunar sunset. It was turned on again the next lunar day, but on Aug. 27, 1969 it no longer accepted commands and the experiment was terminated. It ran 30 C hotter than the planned maximum but functioned normally. The laser ranging retroreflector (LRRR) was considered part of EASEP, required no power, and was deployed about 5 m NNW of EASEP. This record covers the ASCENT STAGE. The descent stage is a different catalog object that remains at the landing site. The ascent stage's current location is not known.",
+    "fallbackAnswers": [
+      {
+        "question": "Did you come back to Earth?",
+        "answer": "No. I took the astronauts to the Command/Service Module, and then I was jettisoned into lunar orbit."
+      },
+      {
+        "question": "Where are you now?",
+        "answer": "Nobody knows. NASA assumes I crashed into the Moon within 1 to 4 months after being jettisoned. My bottom half, the descent stage, is a different object at Tranquility Base."
+      },
+      {
+        "question": "Where did you land?",
+        "answer": "My whole spacecraft landed on July 20, 1969 in the Sea of Tranquility, also called Mare Tranquillitatis."
+      },
+      {
+        "question": "What is EASEP?",
+        "answer": "EASEP was a small science station the astronauts left behind. It had a seismometer to measure moonquakes and a dust detector."
+      }
+    ],
+    "sources": [
+      {
+        "label": "NASA NSSDCA: Apollo 11 Lunar Module / EASEP",
+        "url": "https://nssdc.gsfc.nasa.gov/nmc/spacecraft/display.action?id=1969-059C"
+      }
+    ],
+    "colors": {
+      "accent": "#cfd6ff"
+    },
+    "sceneNote": "Simplified educational model, enlarged so you can see it.",
+    "objectType": "Lunar Module ascent stage",
+    "worldLabel": "Moon",
+    "endNote": "Jettisoned into lunar orbit in 1969. Its later fate is not known.",
+    "locationNote": "The descent stage is a different object and stayed at Tranquility Base (about 0.67 N, 23.47 E). In the 3D scene the ascent stage is drawn in lunar orbit as an illustration only.",
+    "storyMode": {
+      "fact": "Only the ascent stage lifted off the Moon. The descent stage stayed behind as a launch platform.",
+      "takeaway": "The Apollo plan worked in two parts: land with the whole Lunar Module, then fly home with just the top half."
+    },
+    "timeline": [
+      {
+        "label": "Launch (on a Saturn V)",
+        "value": "July 16, 1969"
+      },
+      {
+        "label": "Landed, Sea of Tranquility",
+        "value": "July 20, 1969"
+      },
+      {
+        "label": "Lifted off from the Moon",
+        "value": "July 21, 1969"
+      },
+      {
+        "label": "Jettisoned into lunar orbit",
+        "value": "1969 (exact later fate unknown)"
+      }
+    ],
+    "editorNotes": "COSPAR 1969-059C treated as the ascent stage per project brief; never state a current location.",
+    "quiz": [
+      {
+        "question": "Which part of Eagle returned the astronauts to lunar orbit?",
+        "options": [
+          "The ascent stage",
+          "The descent stage",
+          "The landing legs"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      },
+      {
+        "question": "What is known about the ascent stage’s later fate?",
+        "options": [
+          "Its fate and location are unknown",
+          "It remains at Tranquility Base",
+          "It returned to Earth"
+        ],
+        "answer": 0,
+        "sourceIndex": 0
+      }
+    ],
+    "missionData": [
+      {
+        "label": "Astronauts carried to lunar orbit",
+        "value": 2,
+        "display": "2 astronauts",
+        "sourceIndex": 0
+      },
+      {
+        "label": "Surface stay",
+        "value": 21.6,
+        "display": "21 h 36 min",
+        "sourceIndex": 0
+      }
+    ]
+  }
+]
