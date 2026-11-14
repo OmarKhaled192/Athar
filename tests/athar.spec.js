@@ -84,8 +84,43 @@ test('record narration reveals words only on speech boundaries and resets on reo
 });
 
 test('language switch sets and persists RTL', async ({ page }) => {
-  await page.goto('/'); await page.getByRole('button', { name: 'Switch to Arabic' }).click(); await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await page.reload(); await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+  await page.goto('/'); await expect(page.locator('#boot')).toBeHidden();
+  await page.getByRole('button', { name: 'Switch to Arabic' }).click();
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('nav [data-nav="home"]')).toHaveText('الرئيسية');
+  await expect(page.locator('#boot p')).toHaveText('نوقظ الحديقة…');
+  await expect(page.locator('#steles')).toHaveAttribute('aria-label', 'المستكشفون الأربعة');
+  await expect(page.locator('.hero h1 em')).toHaveText('كل مهمة تترك أثراً');
+  await page.locator('.cta a[href="#story"]').click();
+  await expect(page.locator('#story-title')).toHaveText('أربعة مستكشفين. أربع مهمات. حديقة واحدة.');
+  await page.locator('#story-next').click();
+  await expect(page.locator('.kicker')).toContainText('مستكشف 1 من 4');
+  await expect(page.locator('#st-listen')).toHaveText('🔊 استمع');
+  await page.locator('#st-more').click();
+  await expect(page.locator('#rec-title')).toHaveText('إيغل (مرحلة الصعود)');
+  await expect(page.locator('#qa-go')).toHaveText('اسأل');
+  await page.locator('.qa-chips .chip').first().click();
+  await expect(page.locator('#qa-out')).toContainText('من ملاحظات السجل');
+  await page.locator('#rec-close').click();
+  await page.getByRole('button', { name: 'المصادر والشكر' }).first().click();
+  await expect(page.locator('#cr-title')).toHaveText('المصادر والشكر');
+  await expect(page.locator('#cr-body')).not.toContainText('Facts vs. narration');
+  await page.locator('#cr-close').click();
+  await page.goto('/#explore');
+  await expect(page.locator('.filters [data-filter="all"]')).toHaveText('الكل');
+  await expect(page.locator('#explorer-list')).toContainText('بايونير 10');
+  await page.getByRole('button', { name: /التبديل إلى الإنجليزية/ }).click();
+  await expect(page.locator('.filters [data-filter="all"]')).toHaveText('All');
+  await expect(page.locator('#explorer-list')).toContainText('Pioneer 10');
+  await page.getByRole('button', { name: 'Switch to Arabic' }).click();
+  await page.goto('/#story');
+  await page.reload();
+  await expect(page.locator('#boot')).toBeHidden();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
+  await expect(page.locator('#story-title')).toHaveText('أربعة مستكشفين. أربع مهمات. حديقة واحدة.');
+  await page.getByRole('button', { name: /التبديل إلى الإنجليزية/ }).click();
+  await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+  await expect(page.locator('#story-title')).toHaveText('Four explorers. Four missions. One garden.');
 });
 
 test('mobile has no horizontal overflow and passes axe', async ({ page }) => {
@@ -105,5 +140,7 @@ test('WebGL failure exposes the story fallback', async ({ page }) => {
 });
 
 test('offline app shell is served by service worker', async ({ page, context }) => {
-  await page.goto('/'); await page.waitForTimeout(1200); await page.reload(); await context.setOffline(true); await page.goto('/'); await expect(page.locator('#steles .stele')).toHaveCount(4);
+  await page.goto('/'); await page.waitForTimeout(1200);
+  await expect.poll(() => page.evaluate(() => caches.keys())).toContain('athar-static-v2');
+  await page.reload(); await context.setOffline(true); await page.goto('/'); await expect(page.locator('#steles .stele')).toHaveCount(4);
 });

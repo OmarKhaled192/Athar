@@ -1,4 +1,4 @@
-const CACHE = 'athar-static-v1';
+const CACHE = 'athar-static-v2';
 const FILES = ['./', './index.html', './css/styles.css', './js/app.js', './js/models.js', './js/scene.js', './data/characters.json', './data/worlds.json', './data/i18n/en.json', './data/i18n/ar.json', './vendor/three.module.min.js', './vendor/addons/OrbitControls.js'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('athar-static-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));

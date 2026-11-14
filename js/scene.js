@@ -12,7 +12,7 @@ export class ExploreScene {
     Object.assign(this, o); // host, labelsHost, data, worlds, reduced, onArtifact, onWorld, onError, onProgress
     this.items = new Map(); this.pickables = []; this.fly = null; this.running = false; this.raf = 0;
     this.filter = 'all'; this.selected = null; this.pointer = new THREE.Vector2(); this.ray = new THREE.Raycaster();
-    this.clock = new THREE.Clock(); this.t = 0; this.tags = new Map();
+    this.clock = new THREE.Clock(); this.t = 0; this.tags = new Map(); this.locale = 'en';
   }
 
   async init() {
@@ -122,9 +122,25 @@ export class ExploreScene {
 
   _tag(id, label, cls, fn, accent) {
     const b = document.createElement('button'); b.type = 'button'; b.className = `tag ${cls}`; b.textContent = label;
-    b.setAttribute('aria-label', cls === 'tag-artifact' ? `Open story: ${label}` : `Fly to ${label}`);
+    b.setAttribute('aria-label', cls === 'tag-artifact' ? (this.locale === 'ar' ? `افتح قصة: ${label}` : `Open story: ${label}`) : (this.locale === 'ar' ? `انتقل إلى ${label}` : `Fly to ${label}`));
     if (accent) b.style.setProperty('--accent', accent); b.addEventListener('click', fn);
     this.labelsHost.appendChild(b); this.tags.set(id, b);
+  }
+
+  updateLocalization(data, worlds, arabicWorlds) {
+    this.locale = arabicWorlds ? 'ar' : 'en';
+    this.worlds = arabicWorlds ? { ...worlds, disclaimer: arabicWorlds.disclaimer, worlds: worlds.worlds.map(w => ({ ...w, ...(arabicWorlds[w.id] || {}) })) } : worlds;
+    this.canvas?.setAttribute('aria-label', this.locale === 'ar' ? 'حديقة ثلاثية الأبعاد: اسحب للتدوير، ومرّر أو قرّب بإصبعين للتكبير. تظهر أسماء المستكشفين أيضاً كأزرار.' : '3D garden: drag to rotate, scroll or pinch to zoom. Explorers are also listed as buttons.');
+    const chars = new Map(data.map(c => [c.id, c]));
+    for (const [id, tag] of this.tags) {
+      const world = worlds.worlds.find(w => w.id === id);
+      const label = (world && arabicWorlds?.[id]?.name) || chars.get(id)?.name || world?.name;
+      if (!label) continue;
+      tag.textContent = label;
+      tag.setAttribute('aria-label', world
+        ? (this.locale === 'ar' ? `انتقل إلى ${label}` : `Fly to ${label}`)
+        : (this.locale === 'ar' ? `افتح قصة: ${label}` : `Open story: ${label}`));
+    }
   }
 
   _bind() {
