@@ -56,6 +56,7 @@ function setLocale(lang) {
   S.i18n = S.locale === 'ar' ? S.ar : S.en;
   document.body.classList.toggle('rtl', S.locale === 'ar');
   const b = $('#language-toggle'); if (b) { b.textContent = tx('switch'); b.lang = S.locale === 'ar' ? 'en' : 'ar'; b.setAttribute('aria-label', `${tx('switch')} — ${S.locale === 'ar' ? ui('switchToEnglish') : 'Switch to Arabic'}`); }
+  updateMenuToggle();
   try { localStorage.setItem('athar-language', S.locale); } catch {}
   translateStatic();
   if (S.view === 'story' && steps.length) showStep(S.step, false);
@@ -69,6 +70,13 @@ function setLocale(lang) {
   }
   if ($('#record')?.open && S.current) openRecord(S.current, null, true);
   if ($('#credits')?.open) openCredits();
+}
+function updateMenuToggle() {
+  const button = $('#menu-toggle'); if (!button) return;
+  const key = button.getAttribute('aria-expanded') === 'true' ? 'menuClose' : 'menuOpen';
+  const label = S.locale === 'ar' ? ui(key) : tx(key);
+  button.setAttribute('aria-label', label);
+  const text = $('span', button); if (text) text.textContent = label;
 }
 
 /* ---------- helpers ---------- */
@@ -496,8 +504,8 @@ function showStep(i, focus = true) {
       <p class="tagline">${esc(c.tagline)}</p>
       <blockquote class="voice"><span class="badge voice-b">${S.locale === 'ar' ? ui('firstVoice') : 'In its own voice · creative narration'}</span>“${esc(story.intro)}”</blockquote>
       <div class="cards2">
-        <section class="card"><span class="badge fact-b">${ui('memorableFact')}</span><p>${esc(c.storyMode?.fact || c.funFacts[0])}</p></section>
-        <section class="card"><span class="badge sci-b">${ui('takeaway')}</span><p>${esc(c.storyMode?.takeaway || c.whatITaught[0].text)}</p></section>
+        <section class="card"><span class="badge fact-b">${S.locale === 'ar' ? ui('memorableFact') : tx('memorableFact')}</span><p>${esc(c.storyMode?.fact || c.funFacts[0])}</p></section>
+        <section class="card"><span class="badge sci-b">${S.locale === 'ar' ? ui('takeaway') : tx('takeaway')}</span><p>${esc(c.storyMode?.takeaway || c.whatITaught[0].text)}</p></section>
       </div>
       <ol class="mini-tl" aria-label="${esc(S.locale === 'ar' ? ui('timeline') : 'Timeline')}">${c.timeline.map(t => `<li><b>${esc(t.value)}</b><span>${esc(t.label)}</span></li>`).join('')}</ol>
       <div class="row">
@@ -721,6 +729,12 @@ function openCredits() {
   $('#cr-close').addEventListener('click', () => d.close()); if (!d.open) d.showModal(); $('#cr-title').focus({preventScroll:true});
 }
 function bindGlobal() {
+  const menu = $('#menu-toggle'), nav = $('#main-nav');
+  const closeMenu = () => { if (!menu || !nav) return; menu.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; updateMenuToggle(); };
+  menu?.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', String(open)); nav.dataset.open = String(open); updateMenuToggle(); });
+  nav?.addEventListener('click', e => { if (e.target.closest('a,button')) closeMenu(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+  document.addEventListener('click', e => { if (menu?.getAttribute('aria-expanded') === 'true' && !e.target.closest('.topbar')) closeMenu(); });
   $('#language-toggle').addEventListener('click', () => { S.i18n = S.locale === 'en' ? S.ar : S.en; setLocale(S.locale === 'en' ? 'ar' : 'en'); });
   $('#open-credits').addEventListener('click', openCredits); $('#open-credits-2').addEventListener('click', openCredits);
   for (const d of $$('dialog')) {

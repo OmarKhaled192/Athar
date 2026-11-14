@@ -1,6 +1,10 @@
 {
   "language": "English",
   "switch": "العربية",
+  "menuOpen": "Menu",
+  "menuClose": "Close menu",
+  "memorableFact": "Memorable fact · NASA-sourced",
+  "takeaway": "Science takeaway",
   "verifiedFact": "Verified fact · NASA-sourced",
   "creativeNarration": "Creative narration",
   "quizTitle": "Quick check",

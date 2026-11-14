@@ -18,6 +18,8 @@
     "appError": "تعذّر فتح الحديقة",
     "loadHelp": "تُحمّل ATHAR القصص باستخدام fetch()، وهذا يتطلب خادماً محلياً. شغّل python3 -m http.server 8000 من هذا المجلد، ثم افتح http://localhost:8000.",
     "mainNav": "القائمة الرئيسية",
+    "menuOpen": "القائمة",
+    "menuClose": "إغلاق القائمة",
     "home": "الرئيسية",
     "story": "القصة",
     "garden": "الحديقة",

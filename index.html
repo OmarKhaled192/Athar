@@ -1,148 +1,200 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>ATHAR — Every Mission Leaves a Mark</title>
-<meta name="description" content="An interactive memorial garden for the real NASA robots and spacecraft that explored Mars, the Moon and deep space. An independent educational project.">
-<meta name="theme-color" content="#040a18">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23040a18'/%3E%3Cpath d='M40 10a24 24 0 1 0 0 44 20 20 0 1 1 0-44z' fill='none' stroke='%235eead4' stroke-width='4'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
-<script type="importmap">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>ATHAR — Every Mission Leaves a Mark</title>
+    <meta name="description"
+      content="An interactive memorial garden for the real NASA robots and spacecraft that explored Mars, the Moon and deep space. An independent educational project.">
+    <meta name="theme-color" content="#040a18">
+    <link rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23040a18'/%3E%3Cpath d='M40 10a24 24 0 1 0 0 44 20 20 0 1 1 0-44z' fill='none' stroke='%235eead4' stroke-width='4'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="importmap">
 { "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }
 </script>
-</head>
-<body>
-<a class="skip" href="#main">Skip to content</a>
+  </head>
 
-<div id="boot" class="boot" role="status" aria-live="polite">
-  <div class="spinner" aria-hidden="true"></div><p>Waking the garden…</p>
-</div>
-<div id="app-error" class="boot" role="alert" hidden>
-  <h2>The garden could not open</h2>
-  <p id="app-error-msg"></p>
-  <p class="muted">ATHAR loads its stories with <code>fetch()</code>, which needs a web server. From this folder run <code>python3 -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p>
-</div>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
 
-<header class="topbar">
-  <a class="brand" href="#home" aria-label="ATHAR home">
-    <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true"><path d="M38 8a24 24 0 1 0 0 48 20 20 0 1 1 0-48z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M40 20l3.2 6.6 7.2 1-5.2 5.1 1.2 7.2-6.4-3.4-6.4 3.4 1.2-7.2-5.2-5.1 7.2-1z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/></svg>
-    <span class="brand-text"><b>ATHAR</b><small>Memorial garden · Mars &amp; Moon</small></span>
-  </a>
-  <nav aria-label="Main">
-    <a href="#home" data-nav="home">Home</a>
-    <a href="#story" data-nav="story">Story</a>
-    <a href="#explore" data-nav="explore">Garden</a>
-    <button type="button" id="open-credits">Credits</button>
-    <button type="button" id="language-toggle" aria-label="Switch to Arabic" lang="ar">العربية</button>
-  </nav>
-</header>
+    <div id="boot" class="boot" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Waking the garden…</p>
+    </div>
+    <div id="app-error" class="boot" role="alert" hidden>
+      <h2>The garden could not open</h2>
+      <p id="app-error-msg"></p>
+      <p class="muted">ATHAR loads its stories with <code>fetch()</code>, which needs a web server. From this folder run
+        <code>python3 -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p>
+    </div>
 
-<main id="main">
-  <!-- HOME -->
-  <section id="view-home" class="view" data-view="home" aria-labelledby="home-title">
-    <div class="hero">
-      <div class="sky" aria-hidden="true"><canvas id="stars" aria-hidden="true"></canvas><div class="moon-orb"></div></div>
-      <div class="ridge ridge-l" aria-hidden="true"></div><div class="ridge ridge-r" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <p class="eyebrow">Memorial garden · Mars · Moon · Deep space</p>
-        <h1 id="home-title" tabindex="-1"><span>ATHAR</span><em>Every Mission Leaves a Mark</em></h1>
-        <p class="lede">Meet four real NASA explorers that stopped working, but never stopped teaching. Read their stories, then wander the garden where they rest.</p>
-        <div class="cta">
-          <a class="btn primary" href="#story">Start the Story <span aria-hidden="true">▸</span></a>
-          <a class="btn ghost" href="#explore">Explore the Garden</a>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="ATHAR home">
+        <svg viewBox="0 0 64 64" width="40" height="40" aria-hidden="true">
+          <path d="M38 8a24 24 0 1 0 0 48 20 20 0 1 1 0-48z" fill="none" stroke="currentColor" stroke-width="3.5"
+            stroke-linecap="round" />
+          <path d="M40 20l3.2 6.6 7.2 1-5.2 5.1 1.2 7.2-6.4-3.4-6.4 3.4 1.2-7.2-5.2-5.1 7.2-1z" fill="none"
+            stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" />
+        </svg>
+        <span class="brand-text"><b>ATHAR</b><small>Memorial garden · Mars &amp; Moon</small></span>
+      </a>
+      <button type="button" id="menu-toggle" class="menu-toggle" aria-controls="main-nav" aria-expanded="false"
+        aria-label="Open menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <nav id="main-nav" aria-label="Main">
+        <a href="#home" data-nav="home">Home</a>
+        <a href="#story" data-nav="story">Story</a>
+        <a href="#explore" data-nav="explore">Garden</a>
+        <button type="button" id="open-credits">Credits</button>
+        <button type="button" id="language-toggle" aria-label="Switch to Arabic" lang="ar">العربية</button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- HOME -->
+      <section id="view-home" class="view" data-view="home" aria-labelledby="home-title">
+        <div class="hero">
+          <div class="sky" aria-hidden="true"><canvas id="stars" aria-hidden="true"></canvas>
+            <div class="moon-orb"></div>
+          </div>
+          <div class="ridge ridge-l" aria-hidden="true"></div>
+          <div class="ridge ridge-r" aria-hidden="true"></div>
+          <div class="hero-copy">
+            <p class="eyebrow">Memorial garden · Mars · Moon · Deep space</p>
+            <h1 id="home-title" tabindex="-1"><span>ATHAR</span><em>Every Mission Leaves a Mark</em></h1>
+            <p class="lede">Meet four real NASA explorers that stopped working, but never stopped teaching. Read their
+              stories, then wander the garden where they rest.</p>
+            <div class="cta">
+              <a class="btn primary" href="#story">Start the Story <span aria-hidden="true">▸</span></a>
+              <a class="btn ghost" href="#explore">Explore the Garden</a>
+            </div>
+            <p class="cta-note"><b>Start the Story</b> is a guided tour, 4 explorers, about 3 minutes. <b>Explore the
+                Garden</b> is free roaming in 3D.</p>
+          </div>
+          <ul id="steles" class="steles" aria-label="The four explorers"></ul>
         </div>
-        <p class="cta-note"><b>Start the Story</b> is a guided tour, 4 explorers, about 3 minutes. <b>Explore the Garden</b> is free roaming in 3D.</p>
-      </div>
-      <ul id="steles" class="steles" aria-label="The four explorers"></ul>
-    </div>
-    <div class="features">
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><h2>For school kids</h2><p>Short stories, one big fact, one science takeaway.</p></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="6"/><circle cx="18" cy="8" r="3"/></svg><h2>Mars, Moon &amp; beyond</h2><p>Real hardware, honestly placed. Nothing is where it isn't.</p></div>
-      <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z"/></svg><h2>Facts vs. voices</h2><p>Every story shows what is NASA-sourced and what is creative narration.</p></div>
-    </div>
-  </section>
-
-  <!-- STORY -->
-  <section id="view-story" class="view" data-view="story" hidden aria-labelledby="story-title">
-    <h1 id="story-page-title" class="sr-only">The ATHAR story</h1>
-    <div class="story">
-      <div class="story-stage" id="story-stage" aria-hidden="false">
-        <div id="story-preview" class="stage-preview"></div>
-        <p class="stage-hint" id="stage-hint">Drag the model to turn it</p>
-      </div>
-      <article class="story-text" id="story-text" aria-live="polite"></article>
-    </div>
-    <div class="story-bar">
-      <button type="button" class="btn ghost" id="story-back">◂ Back</button>
-      <div class="progress">
-        <div class="progress-track" aria-hidden="true"><i id="progress-fill"></i></div>
-        <ol id="story-dots" class="dots" aria-label="Story steps"></ol>
-        <p id="progress-label" class="muted"></p>
-      </div>
-      <button type="button" class="btn primary" id="story-next">Next ▸</button>
-    </div>
-  </section>
-
-  <!-- EXPLORE -->
-  <section id="view-explore" class="view" data-view="explore" hidden aria-labelledby="explore-title">
-    <h1 id="explore-title" class="sr-only" tabindex="-1">Explore the Garden</h1>
-    <div class="explore" id="explore">
-      <div id="gl-host" class="gl-host"></div>
-      <div id="labels" class="labels"></div>
-      <div class="hud hud-top">
-        <ul class="hints" aria-label="Controls">
-          <li>🖱 Drag to rotate</li><li>🔍 Scroll / pinch to zoom</li><li>✦ Tap an explorer to learn</li>
-        </ul>
-      </div>
-      <div class="hud hud-bottom">
-        <div class="filters" role="group" aria-label="Show a world">
-          <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
-          <button type="button" class="chip" data-filter="moon" aria-pressed="false">Moon</button>
-          <button type="button" class="chip" data-filter="mars" aria-pressed="false">Mars</button>
-          <button type="button" class="chip" data-filter="deep_space" aria-pressed="false">Deep space</button>
-          <button type="button" class="chip reset" id="reset-cam">⟲ Reset view</button>
+        <div class="features">
+          <div><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z" />
+            </svg>
+            <h2>For school kids</h2>
+            <p>Short stories, one big fact, one science takeaway.</p>
+          </div>
+          <div><svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="9" cy="12" r="6" />
+              <circle cx="18" cy="8" r="3" />
+            </svg>
+            <h2>Mars, Moon &amp; beyond</h2>
+            <p>Real hardware, honestly placed. Nothing is where it isn't.</p>
+          </div>
+          <div><svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 5h7a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-7a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h7z" />
+            </svg>
+            <h2>Facts vs. voices</h2>
+            <p>Every story shows what is NASA-sourced and what is creative narration.</p>
+          </div>
         </div>
-        <ul id="explorer-list" class="explorer-list" aria-label="Explorers (keyboard-friendly list)"></ul>
-        <p class="scale-note">Not to scale. Models are enlarged and positions are illustrative.</p>
-      </div>
-      <aside id="world-chip" class="world-chip" hidden aria-live="polite"></aside>
-      <div id="gl-loading" class="overlay" role="status"><div class="spinner" aria-hidden="true"></div><p id="gl-loading-msg">Building the sky…</p></div>
-      <div id="gl-fallback" class="overlay fallback" hidden>
-        <h2>3D isn't available here</h2>
-        <p id="gl-fallback-msg">Your browser or device can't show the 3D garden. The stories still work:</p>
-        <ul id="fallback-list" class="fallback-list"></ul>
-        <a class="btn primary" href="#story">Start the Story</a>
-      </div>
-    </div>
-  </section>
-</main>
+      </section>
 
-<footer class="foot">
-  <p><b>ATHAR is an independent educational project.</b> It is not affiliated with or endorsed by NASA. Facts come from NASA sources linked on every record; first-person voices are a storytelling device, not the spacecraft literally speaking.</p>
-  <p><button type="button" class="linklike" id="open-credits-2">Sources &amp; credits</button></p>
-</footer>
+      <!-- STORY -->
+      <section id="view-story" class="view" data-view="story" hidden aria-labelledby="story-title">
+        <h1 id="story-page-title" class="sr-only">The ATHAR story</h1>
+        <div class="story">
+          <div class="story-stage" id="story-stage" aria-hidden="false">
+            <div id="story-preview" class="stage-preview"></div>
+            <p class="stage-hint" id="stage-hint">Drag the model to turn it</p>
+          </div>
+          <article class="story-text" id="story-text" aria-live="polite"></article>
+        </div>
+        <div class="story-bar">
+          <button type="button" class="btn ghost" id="story-back">◂ Back</button>
+          <div class="progress">
+            <div class="progress-track" aria-hidden="true"><i id="progress-fill"></i></div>
+            <ol id="story-dots" class="dots" aria-label="Story steps"></ol>
+            <p id="progress-label" class="muted"></p>
+          </div>
+          <button type="button" class="btn primary" id="story-next">Next ▸</button>
+        </div>
+      </section>
 
-<!-- RECORD DIALOG -->
-<dialog id="record" aria-labelledby="rec-title">
-  <div class="rec-wrap" id="rec-body"></div>
-</dialog>
+      <!-- EXPLORE -->
+      <section id="view-explore" class="view" data-view="explore" hidden aria-labelledby="explore-title">
+        <h1 id="explore-title" class="sr-only" tabindex="-1">Explore the Garden</h1>
+        <div class="explore" id="explore">
+          <div id="gl-host" class="gl-host"></div>
+          <div id="labels" class="labels"></div>
+          <div class="hud hud-top">
+            <ul class="hints" aria-label="Controls">
+              <li>🖱 Drag to rotate</li>
+              <li>🔍 Scroll / pinch to zoom</li>
+              <li>✦ Tap an explorer to learn</li>
+            </ul>
+          </div>
+          <div class="hud hud-bottom">
+            <div class="filters" role="group" aria-label="Show a world">
+              <button type="button" class="chip" data-filter="all" aria-pressed="true">All</button>
+              <button type="button" class="chip" data-filter="moon" aria-pressed="false">Moon</button>
+              <button type="button" class="chip" data-filter="mars" aria-pressed="false">Mars</button>
+              <button type="button" class="chip" data-filter="deep_space" aria-pressed="false">Deep space</button>
+              <button type="button" class="chip reset" id="reset-cam">⟲ Reset view</button>
+            </div>
+            <ul id="explorer-list" class="explorer-list" aria-label="Explorers (keyboard-friendly list)"></ul>
+            <p class="scale-note">Not to scale. Models are enlarged and positions are illustrative.</p>
+          </div>
+          <aside id="world-chip" class="world-chip" hidden aria-live="polite"></aside>
+          <div id="gl-loading" class="overlay" role="status">
+            <div class="spinner" aria-hidden="true"></div>
+            <p id="gl-loading-msg">Building the sky…</p>
+          </div>
+          <div id="gl-fallback" class="overlay fallback" hidden>
+            <h2>3D isn't available here</h2>
+            <p id="gl-fallback-msg">Your browser or device can't show the 3D garden. The stories still work:</p>
+            <ul id="fallback-list" class="fallback-list"></ul>
+            <a class="btn primary" href="#story">Start the Story</a>
+          </div>
+        </div>
+      </section>
+    </main>
 
-<!-- CREDITS DIALOG -->
-<dialog id="credits" aria-labelledby="cr-title">
-  <div class="rec-wrap" id="cr-body"></div>
-</dialog>
+    <footer class="foot">
+      <p><b>ATHAR is an independent educational project.</b> It is not affiliated with or endorsed by NASA. Facts come
+        from NASA sources linked on every record; first-person voices are a storytelling device, not the spacecraft
+        literally speaking.</p>
+      <p><button type="button" class="linklike" id="open-credits-2">Sources &amp; credits</button></p>
+    </footer>
 
-<script>
-/* Classic (non-module) safety net: module scripts and fetch() are blocked on file://, so tell the user how to run it. */
-(function(){function fail(m){var b=document.getElementById('boot'),e=document.getElementById('app-error');if(!b||b.hidden)return;b.hidden=true;e.hidden=false;document.getElementById('app-error-msg').textContent=m;}
-if(location.protocol==='file:')fail('You opened index.html directly from disk (file://), which browsers block for modules and JSON.');
-else setTimeout(function(){fail('The garden is taking too long to start. Check your connection and reload.');},15000);})();
-</script>
-<script type="module" src="js/app.js"></script>
-<noscript><p class="noscript">ATHAR needs JavaScript to show its stories.</p></noscript>
-</body>
+    <!-- RECORD DIALOG -->
+    <dialog id="record" aria-labelledby="rec-title">
+      <div class="rec-wrap" id="rec-body"></div>
+    </dialog>
+
+    <!-- CREDITS DIALOG -->
+    <dialog id="credits" aria-labelledby="cr-title">
+      <div class="rec-wrap" id="cr-body"></div>
+    </dialog>
+
+    <script>
+      /* Classic (non-module) safety net: module scripts and fetch() are blocked on file://, so tell the user how to run it. */
+      (function () {
+        function fail(m) { var b = document.getElementById('boot'), e = document.getElementById('app-error'); if (!b || b.hidden) return; b.hidden = true; e.hidden = false; document.getElementById('app-error-msg').textContent = m; }
+        if (location.protocol === 'file:') fail('You opened index.html directly from disk (file://), which browsers block for modules and JSON.');
+        else setTimeout(function () { fail('The garden is taking too long to start. Check your connection and reload.'); }, 15000);
+      })();
+    </script>
+    <script type="module" src="js/app.js"></script>
+    <noscript>
+      <p class="noscript">ATHAR needs JavaScript to show its stories.</p>
+    </noscript>
+  </body>
+
 </html>
