@@ -133,73 +133,82 @@
   },
   {
     "id": "opportunity",
-    "name": "Opportunity",
-    "fullName": "Mars Exploration Rover: Opportunity (twin of Spirit)",
+    "name": "Spirit & Opportunity",
+    "fullName": "Mars Exploration Rovers: Spirit (MER-A) and Opportunity (MER-B)",
     "destination": "mars",
     "status": "silent_but_remembered",
-    "statusLabel": "Silent but remembered",
-    "tagline": "The Mars rover that held the off-Earth driving record until 2026.",
+    "statusLabel": "Both missions complete",
+    "tagline": "Twin rovers. Two landing sites. One search for ancient water.",
     "launchYear": 2003,
     "arrivalYear": 2004,
     "endYear": 2019,
-    "location": "Meridiani Planum, Mars (landing site)",
+    "location": "Gusev Crater and Meridiani Planum, Mars",
+    "objectType": "Twin Mars rovers",
     "model": {
       "type": "procedural",
-      "credit": "ATHAR original simplified low-poly illustration (not a NASA model, not to scale)"
+      "credit": "ATHAR original character-style 3D illustration (not a NASA model, not to scale)"
     },
     "story": {
-      "intro": "Hi, I'm Opportunity. My twin sister Spirit and I were robot geologists, sent to Mars to look for signs of past water.",
+      "intro": "Hi, we're Spirit and Opportunity, twin robot geologists sent to opposite sides of Mars to search for signs of past water.",
       "paragraphs": [
-        "Spirit landed at Gusev Crater on January 3, 2004. I landed on January 24, 2004, on the other side of Mars, at a place called Meridiani Planum, where minerals hinted that Mars once had a wet history.",
-        "We read the story written in Mars's rocks. What we found confirmed that water stayed on the surface of Mars for a long time in ancient days.",
-        "I kept driving, and driving. By the end I had rolled 28.06 miles (45.16 km), farther than any other robot on another world, a record that stood until October 11, 2026, when Perseverance passed it.",
-        "In 2018, a dust storm covered the whole planet. I run on sunlight, and the sky went dark. On June 10, 2018, I sent my last message to Earth. NASA ended my mission in 2019, and I'm still parked on Mars."
+        "Spirit launched first, on June 10, 2003, and landed in Gusev Crater on January 3, 2004. Opportunity launched on July 7, 2003, and landed at Meridiani Planum on January 24, 2004.",
+        "At Gusev, Spirit uncovered nearly pure silica, a clue that hot springs or steam may once have changed the ground. At Meridiani, minerals in Opportunity’s rocks suggested that Mars had a wet history.",
+        "We were each designed for 90 Martian days. Spirit operated for 6 years, 2 months, and 19 days and traveled about 4.8 miles (7.73 kilometers). Opportunity worked for almost 15 years and drove 28.06 miles (45.16 kilometers), including the first marathon-distance journey by a human-made explorer on another world.",
+        "Spirit became stuck in soft soil; its last communication was March 22, 2010, and NASA ended contact efforts on May 25, 2011. Opportunity last communicated during a planet-wide dust storm on June 10, 2018; NASA declared its mission over on February 13, 2019."
       ],
-      "farewell": ""
+      "farewell": "Together, we showed that ancient Mars was much wetter than it is today. Our two distant landing sites gave scientists different pieces of the planet’s story."
     },
     "whatITaught": [
       {
-        "title": "Mars was once wet",
-        "text": "By studying rocks, Spirit and I confirmed that water was on the surface of Mars for a long time in ancient days."
+        "title": "Mars was wetter in the past",
+        "text": "Spirit’s silica discovery pointed to ancient hot springs or steam vents, while Opportunity found minerals at Meridiani Planum that suggested a wet history."
       },
       {
-        "title": "Robot geologists work",
-        "text": "Two rovers, landing on opposite sides of Mars, showed how much a mobile robot can learn about a planet's history by reading its rocks."
+        "title": "Twin rovers can study two worlds at once",
+        "text": "Landing on opposite sides of Mars let Spirit and Opportunity compare different rocks, soils, and clues about the planet’s past water."
       },
       {
-        "title": "Mars had liquid water",
-        "text": "My mission gave evidence of past liquid water on Mars, which helps scientists ask whether the planet could once have been a friendlier place."
+        "title": "Long missions bring more science",
+        "text": "Designed for 90 sols each, the rovers worked for years. Together they traveled about 32.86 miles (52.89 kilometers)."
       }
     ],
     "funFacts": [
-      "Spirit and I landed on opposite sides of Mars, 21 days apart.",
-      "Spirit drove 4.8 miles (7.7 km) and finished its mission in 2010.",
-      "In March 2014, wind cleaned much of the dust off my solar panels, and I took a self-portrait to show it.",
-      "Perseverance passed my driving distance record on October 11, 2026."
+      "Spirit and Opportunity landed on opposite sides of Mars, on January 3 and January 24, 2004.",
+      "Spirit traveled about 4.8 miles (7.73 kilometers); Opportunity traveled 28.06 miles (45.16 kilometers).",
+      "Spirit’s wheel exposed nearly pure silica at a patch called Gertrude Weise, likely formed by hot springs or steam.",
+      "Opportunity became the first human-made explorer to exceed a marathon distance on another world in March 2015."
     ],
-    "aiContext": "The Mars Exploration Rovers (MER), Spirit and Opportunity, were identical twin robots that helped rewrite understanding of the early history of Mars. Objective: look for signs of past water on Mars. Spirit landed January 3, 2004 at Gusev Crater, a possible former lake in a giant impact crater. Opportunity landed January 24, 2004 at Meridiani Planum, where mineral deposits suggested Mars had a wet history. The landing sites were on opposite sides of Mars. By studying the rock record, Spirit and Opportunity confirmed that water was long standing on the surface of Mars in ancient times. Spirit journeyed 4.8 miles (7.7 km) and concluded its mission in 2010. Opportunity drove 28.06 miles (45.16 km) and held the off-Earth roving distance record until October 11, 2026, when Perseverance passed 28.10 miles (45.22 km). Opportunity last communicated with Earth on June 10, 2018, as a planet-wide dust storm blanketed the solar-powered rover's location. In March 2014 wind had cleaned much of the dust off Opportunity's solar panels, shown in a self-portrait made from images taken March 22 to 24, 2014. NASA's infographic credits the rover mission with a 14-year lifespan and more than 300,000 raw images. NASA/JPL confirmed on October 11, 2026 that Perseverance passed this distance record. The rover's mission ended in 2019 after it stopped communicating during the 2018 dust storm.",
+    "aiContext": "NASA’s Mars Exploration Rovers Spirit (MER-A) and Opportunity (MER-B) were twin rovers sent to opposite sides of Mars to search for evidence of past water. Spirit launched June 10, 2003, landed at Gusev Crater Jan. 3, 2004, and was designed for 90 sols. It operated 6 years, 2 months and 19 days, traveled about 4.8 miles (7.73 km), and found nearly pure silica at Gertrude Weise, likely formed by hot springs or steam. Spirit’s last communication was March 22, 2010; NASA ended contact attempts May 25, 2011. Opportunity launched July 7, 2003, landed at Meridiani Planum Jan. 24, 2004, and was also designed for 90 sols. It operated for almost 15 years, drove 28.06 miles (45.16 km), and became the first human-made explorer to exceed marathon distance on another world on March 25, 2015. Its last communication was June 10, 2018 during a planet-wide dust storm; NASA declared its mission over Feb. 13, 2019. Perseverance passed Opportunity’s driving-distance mark on Oct. 11, 2026.",
     "fallbackAnswers": [
       {
-        "question": "Why did you stop?",
-        "answer": "A planet-wide dust storm blocked the sunlight my solar panels needed. My last message to Earth was on June 10, 2018."
-      },
-      {
         "question": "Where did you land?",
-        "answer": "I landed on January 24, 2004 at Meridiani Planum, a place where minerals suggested Mars had a wet history."
+        "answer": "We landed at two sites: Spirit at Gusev Crater on January 3, 2004, and Opportunity at Meridiani Planum on January 24, 2004."
       },
       {
-        "question": "Who is Spirit?",
-        "answer": "Spirit is my identical twin. She landed on January 3, 2004 at Gusev Crater, on the other side of Mars, and finished her mission in 2010."
+        "question": "How far did you travel?",
+        "answer": "Spirit traveled about 4.8 miles (7.73 kilometers), and Opportunity traveled 28.06 miles (45.16 kilometers)."
+      },
+      {
+        "question": "What did you discover about water?",
+        "answer": "Spirit found silica likely formed by hot springs or steam. Minerals studied by Opportunity at Meridiani Planum also suggested Mars once had a wet history."
+      },
+      {
+        "question": "When did your missions end?",
+        "answer": "Spirit’s last communication was March 22, 2010, and NASA ended contact efforts May 25, 2011. Opportunity last communicated June 10, 2018; NASA declared its mission over February 13, 2019."
       }
     ],
     "sources": [
       {
-        "label": "NASA Science: Mars Exploration Rovers, Spirit and Opportunity",
+        "label": "NASA Science: Mars Exploration Rovers — Spirit and Opportunity",
         "url": "https://science.nasa.gov/mission/mars-exploration-rovers-spirit-and-opportunity/"
       },
       {
-        "label": "NASA Science blog: Perseverance sets off-world driving record (Oct 12, 2026)",
-        "url": "https://science.nasa.gov/blogs/perseverance-mars-rover/2026/10/12/nasas-perseverance-sets-off-world-record-for-total-distance-driven/"
+        "label": "NASA Science: Spirit",
+        "url": "https://science.nasa.gov/mission/mer-spirit/"
+      },
+      {
+        "label": "NASA Science: Opportunity",
+        "url": "https://science.nasa.gov/mission/mer-opportunity/"
       }
     ],
     "colors": {
@@ -208,48 +217,55 @@
     "sceneNote": "Simplified educational model, enlarged so you can see it.",
     "objectType": "Mars rover",
     "worldLabel": "Mars",
-    "locationNote": "Last contact was June 10, 2018. NASA reports the rover is parked on Mars.",
+    "locationNote": "Spirit landed at Gusev Crater; Opportunity landed at Meridiani Planum on the opposite side of Mars. They remain at their respective final locations.",
     "storyMode": {
-      "fact": "Opportunity drove 28.06 miles (45.16 km), the off-Earth record until Perseverance passed it on October 11, 2026.",
-      "takeaway": "Rocks are a diary: by reading them, the rovers confirmed water stayed on Mars's surface for a long time."
+      "fact": "Designed for 90 sols each, Spirit worked more than six years and Opportunity nearly 15; together, they traveled about 32.86 miles.",
+      "takeaway": "Comparing rocks from two distant landing sites helped show that ancient Mars had long-lasting surface water."
     },
     "timeline": [
       {
-        "label": "Launch",
-        "value": "2003"
+        "label": "Spirit launch",
+        "value": "June 10, 2003"
       },
       {
-        "label": "Landed at Meridiani Planum",
+        "label": "Opportunity launch",
+        "value": "July 7, 2003"
+      },
+      {
+        "label": "Spirit landed at Gusev Crater",
+        "value": "January 3, 2004"
+      },
+      {
+        "label": "Opportunity landed at Meridiani Planum",
         "value": "January 24, 2004"
       },
       {
-        "label": "Last message to Earth",
-        "value": "June 10, 2018"
+        "label": "Spirit contact efforts ended",
+        "value": "May 25, 2011"
       },
       {
-        "label": "Mission ended",
-        "value": "2019"
+        "label": "Opportunity mission ended",
+        "value": "February 13, 2019"
       }
     ],
-    "endNote": "Last contact June 10, 2018; mission declared ended in 2019.",
-    "editorNotes": "Launch year 2003 and end year 2019 come from the project brief; confirm on the NASA mission page.",
+    "endNote": "Spirit: last communication March 22, 2010; contact efforts ended May 25, 2011. Opportunity: last communication June 10, 2018; mission declared over February 13, 2019.",
     "quiz": [
       {
-        "question": "What kind of explorer was Opportunity?",
+        "question": "Where did the twin rovers land?",
         "options": [
-          "A Mars rover",
-          "A Moon lander",
-          "A deep-space probe"
+          "On opposite sides of Mars",
+          "At the same place on Mars",
+          "On the Moon"
         ],
         "answer": 0,
         "sourceIndex": 0
       },
       {
-        "question": "When was Opportunity’s last contact?",
+        "question": "What did both rovers search for clues about?",
         "options": [
-          "June 10, 2018",
-          "January 25, 2024",
-          "January 23, 2003"
+          "Past water on Mars",
+          "Rings around Mars",
+          "Life on Earth"
         ],
         "answer": 0,
         "sourceIndex": 0
@@ -257,15 +273,27 @@
     ],
     "missionData": [
       {
-        "label": "Distance driven",
+        "label": "Spirit distance driven",
+        "value": 4.8,
+        "display": "4.8 miles (7.73 km)",
+        "sourceIndex": 1
+      },
+      {
+        "label": "Opportunity distance driven",
         "value": 28.06,
-        "display": "28.06 miles",
+        "display": "28.06 miles (45.16 km)",
+        "sourceIndex": 2
+      },
+      {
+        "label": "Combined distance driven",
+        "value": 32.86,
+        "display": "32.86 miles (52.89 km)",
         "sourceIndex": 0
       },
       {
-        "label": "Surface mission",
-        "value": 14,
-        "display": "14 years",
+        "label": "Planned primary mission",
+        "value": 90,
+        "display": "90 sols each",
         "sourceIndex": 0
       }
     ]

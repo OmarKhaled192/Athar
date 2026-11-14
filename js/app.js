@@ -525,7 +525,7 @@ function showStep(i, focus = true) {
     if (s.t === 'intro') {
       box.innerHTML = `
         <p class="kicker">${S.locale === 'ar' ? ui('welcome') : 'Welcome to the garden'}</p>
-        <h2 id="story-title" tabindex="-1">${S.locale === 'ar' ? ui('introTitle') : 'Four explorers. Four missions. One garden.'}</h2>
+        <h2 id="story-title" tabindex="-1">${S.locale === 'ar' ? ui('introTitle') : 'Five explorers. Four stories. One garden.'}</h2>
         <p class="tagline">${S.locale === 'ar' ? ui('introText') : 'Some missions end quietly: a radio goes silent, a battery fades, a blade breaks. These explorers left something behind anyway, and the science still helps us today.'}</p>
         <div class="cards2">
           <section class="card"><span class="badge fact-b">${S.locale === 'ar' ? ui('verifiedFact') : 'Verified fact'}</span><p>${S.locale === 'ar' ? ui('verifiedFactText') : 'Numbers, dates and results come from NASA sources linked on every record.'}</p></section>
