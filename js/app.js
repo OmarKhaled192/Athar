@@ -1,4 +1,5 @@
 // ATHAR — app logic. All story content is rendered from data/characters.json (nothing hardcoded per character).
+import { soundManager } from './sound.js';
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -59,6 +60,7 @@ function setLocale(lang) {
   updateMenuToggle();
   try { localStorage.setItem('athar-language', S.locale); } catch {}
   translateStatic();
+  updateSoundUI();
   if (S.view === 'story' && steps.length) showStep(S.step, false);
   if (S.view === 'home' && S.chars.length) renderSteles();
   if (S.view && S.chars.length) buildExploreUI();
@@ -77,6 +79,41 @@ function updateMenuToggle() {
   const label = S.locale === 'ar' ? ui(key) : tx(key);
   button.setAttribute('aria-label', label);
   const text = $('span', button); if (text) text.textContent = label;
+}
+
+function updateSoundUI() {
+  const p = soundManager.getPreferences(), ar = S.locale === 'ar';
+  const toggle = $('#sound-toggle');
+  if (toggle) {
+    toggle.setAttribute('aria-pressed', String(p.enabled));
+    toggle.setAttribute('aria-label', ar ? (p.enabled ? 'إيقاف الصوت' : 'تشغيل الصوت') : (p.enabled ? 'Mute sound' : 'Enable sound'));
+    toggle.textContent = ar ? (p.enabled ? 'الصوت يعمل' : 'الصوت متوقف') : (p.enabled ? 'Sound on' : 'Sound off');
+  }
+  const labels = ar ? {
+    '#sound-settings-open':'إعدادات الصوت', '#sound-settings-close':'إغلاق إعدادات الصوت', '#sound-title':'إعدادات الصوت',
+    '#sound-help':'الصوت متوقف حتى تفعّله. تُحفظ اختياراتك على هذا الجهاز.', '#sound-enable-label':'تفعيل المؤثرات الصوتية',
+    '#sound-effects-label':'مستوى المؤثرات', '#sound-ambient-label':'أجواء فضائية هادئة (اختياري)',
+    '#sound-music-label':'مستوى الأجواء', '#sound-note':'نغمات هادئة مولّدة؛ لا يُشغّل أي صوت ما لم تفعّله.'
+  } : {
+    '#sound-settings-open':'Sound settings', '#sound-settings-close':'Close sound settings', '#sound-title':'Sound settings',
+    '#sound-help':'Sound is off until you turn it on. Your choices stay on this device.', '#sound-enable-label':'Enable sound effects',
+    '#sound-effects-label':'Effects volume', '#sound-ambient-label':'Quiet space ambience (optional)',
+    '#sound-music-label':'Ambience volume', '#sound-note':'Soft synthesized tones; no audio plays unless enabled.'
+  };
+  for (const [selector, text] of Object.entries(labels)) {
+    const el = $(selector); if (!el) continue;
+    if (selector === '#sound-settings-close') el.setAttribute('aria-label', text); else el.textContent = text;
+  }
+  const d = $('#sound-settings');
+  if (d && S.locale === 'ar') { d.lang = 'ar'; d.dir = 'rtl'; }
+  else if (d) { d.lang = 'en'; d.dir = 'ltr'; }
+  $('#sound-enable').checked = p.enabled; $('#sound-effects-volume').value = String(p.effects);
+  $('#sound-ambient').checked = p.ambient; $('#sound-music-volume').value = String(p.music);
+  const recordToggle = $('#rec-sound');
+  if (recordToggle) {
+    recordToggle.setAttribute('aria-pressed', String(p.enabled));
+    recordToggle.textContent = ar ? (p.enabled ? ui('soundOn') : ui('soundOff')) : (p.enabled ? '♪ Sound effects: on' : '♪ Sound effects: off');
+  }
 }
 
 /* ---------- helpers ---------- */
@@ -172,7 +209,7 @@ function revealWordsUpTo(wordSpans, charIndex, lastRevealed) {
 }
 
 const RecordNarration = {
-  audio: null, soundEnabled: true, active: false, session: 0,
+  active: false, session: 0,
   _wordSpans: [], _cursor: 0,
 
   /**
@@ -190,16 +227,6 @@ const RecordNarration = {
     this._wordSpans = []; this._cursor = 0;
     const btn = $('#rec-listen');
     if (btn) { btn.textContent = S.locale === 'ar' ? ui('listenStory') : '🔊 Listen to the story'; btn.setAttribute('aria-pressed', 'false'); }
-  },
-
-  chime() {
-    if (!this.soundEnabled) return;
-    try {
-      const Audio = window.AudioContext || window.webkitAudioContext; if (!Audio) return;
-      this.audio ??= new Audio(); if (this.audio.state === 'suspended') this.audio.resume().catch(() => {});
-      const now = this.audio.currentTime;
-      [659.25, 783.99].forEach((hz, i) => { const osc = this.audio.createOscillator(), gain = this.audio.createGain(); osc.type = 'sine'; osc.frequency.value = hz; gain.gain.setValueAtTime(0.0001, now + i * 0.12); gain.gain.exponentialRampToValueAtTime(0.018, now + i * 0.12 + 0.025); gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.12 + 0.22); osc.connect(gain); gain.connect(this.audio.destination); osc.start(now + i * 0.12); osc.stop(now + i * 0.12 + 0.24); });
-    } catch { /* Audio effects are optional; narration remains available. */ }
   },
 
   start(c) {
@@ -220,8 +247,6 @@ const RecordNarration = {
 
     const btn = $('#rec-listen');
     if (btn) { btn.textContent = S.locale === 'ar' ? ui('stopNarration') : '⏹ Stop narration'; btn.setAttribute('aria-pressed', 'true'); }
-    this.chime();
-
     // ── finish ────────────────────────────────────────────────────────────────
     const finish = () => {
       if (session !== this.session) return;
@@ -246,8 +271,6 @@ const RecordNarration = {
 
   dispose() {
     this.stop({ reveal: false });
-    try { this.audio?.close?.(); } catch {}
-    this.audio = null;
   }
 };
 
@@ -487,7 +510,9 @@ function buildStory() {
   });
 }
 function showStep(i, focus = true) {
+  const previousStep = S.step;
   S.step = Math.max(0, Math.min(steps.length - 1, i)); const s = steps[S.step], box = $('#story-text'); Speech.stop();
+  if (focus && previousStep !== S.step) soundManager.play(s.t === 'finale' ? (S.quizScore ? 'achievement' : 'mission') : 'story');
   const stage = $('#story-stage');
   $('#progress-fill').style.width = `${(S.step / (steps.length - 1)) * 100}%`;
   $$('#story-dots button').forEach((b, k) => { b.classList.toggle('on', k === S.step); b.classList.toggle('done', k < S.step); b.toggleAttribute('aria-current', k === S.step); if (S.locale === 'ar') b.setAttribute('aria-label', `${ui('step')} ${k + 1}: ${steps[k].t === 'char' ? localizedRecord(steps[k].c).name : steps[k].t === 'intro' ? ui('welcome') : ui('finish')}`); });
@@ -518,7 +543,7 @@ function showStep(i, focus = true) {
     $('#st-listen')?.addEventListener('click', e => toggleSpeech(e.currentTarget, `${story.intro} ${story.paragraphs.join(' ')} ${story.farewell}`, S.locale === 'ar' ? 'ar-EG' : 'en-US'));
     if (Array.isArray(c.quiz) && c.quiz.length) {
       box.insertAdjacentHTML('beforeend', `<section class="quiz card" aria-labelledby="quiz-title"><h3 id="quiz-title">${S.locale === 'ar' ? esc(S.ar.quizTitle) : 'Quick check'}</h3>${c.quiz.map((q,k)=>{const localized=S.locale==='ar'?(S.ar.quiz?.[c.id]?.[k]||q):q, qi=`${c.id}:${k}`;return `<div class="quiz-question"><p>${esc(localized.question)}</p><div class="quiz-options">${localized.options.map((o,j)=>`<button class="chip" type="button" data-qindex="${k}" data-quiz="${j}" ${S.quizAnswered.has(qi)?'disabled':''}>${esc(o)}</button>`).join('')}</div><p class="quiz-result" aria-live="polite"></p></div>`}).join('')}</section>`);
-      $$('.quiz [data-quiz]', box).forEach(b=>b.addEventListener('click',()=>{ const k=+b.dataset.qindex, q=c.quiz[k], qi=`${c.id}:${k}`, group=b.closest('.quiz-question'), result=$('.quiz-result',group); if(+b.dataset.quiz===q.answer){if(!S.quizAnswered.has(qi))S.quizScore++;S.quizAnswered.add(qi);result.textContent=S.locale==='ar'?ui('answerCorrect'):'Correct!';$$('[data-quiz]',group).forEach(x=>x.disabled=true);}else result.textContent=S.locale==='ar'?ui('tryAgain'):'Try again'; }));
+      $$('.quiz [data-quiz]', box).forEach(b=>b.addEventListener('click',()=>{ const k=+b.dataset.qindex, q=c.quiz[k], qi=`${c.id}:${k}`, group=b.closest('.quiz-question'), result=$('.quiz-result',group); if(+b.dataset.quiz===q.answer){if(!S.quizAnswered.has(qi)){S.quizScore++; soundManager.play('correct');}S.quizAnswered.add(qi);result.textContent=S.locale==='ar'?ui('answerCorrect'):'Correct!';$$('[data-quiz]',group).forEach(x=>x.disabled=true);}else {soundManager.play('incorrect');result.textContent=S.locale==='ar'?ui('tryAgain'):'Try again';} }));
     }
   } else {
     detachPreview('story'); $('#story-preview').innerHTML = ''; $('#stage-hint').hidden = true; stage.style.setProperty('--accent', '#5eead4');
@@ -586,6 +611,7 @@ function openRecord(id, opener, force = false) {
   // Repeated renders or focus requests for the already-open record must not
   // cancel and restart its speech session.
   if (d.open && S.current === id && !force) return;
+  if (!force) soundManager.play(id === 'pioneer-10' ? 'radio' : 'discovery');
   // reveal:false — the innerHTML below replaces the whole dialog body immediately.
   const priorScroll = d.scrollTop;
   RecordNarration.stop({ reveal: false }); S.current = c.id; if (!force) S.lastFocus = opener || document.activeElement;
@@ -595,11 +621,9 @@ function openRecord(id, opener, force = false) {
   d.scrollTop = force ? priorScroll : 0;
   $('#rec-close').addEventListener('click', () => d.close());
   $('#rec-listen')?.addEventListener('click', () => RecordNarration.active ? RecordNarration.stop() : RecordNarration.start(c));
-  const soundButton = $('#rec-sound'); if (soundButton) { soundButton.setAttribute('aria-pressed', String(RecordNarration.soundEnabled)); soundButton.textContent = S.locale === 'ar' ? (RecordNarration.soundEnabled ? ui('soundOn') : ui('soundOff')) : (RecordNarration.soundEnabled ? '♪ Sound effects: on' : '♪ Sound effects: off'); }
-  $('#rec-sound')?.addEventListener('click', e => { RecordNarration.soundEnabled = !RecordNarration.soundEnabled; e.currentTarget.setAttribute('aria-pressed', String(RecordNarration.soundEnabled)); e.currentTarget.textContent = S.locale === 'ar' ? (RecordNarration.soundEnabled ? ui('soundOn') : ui('soundOff')) : (RecordNarration.soundEnabled ? '♪ Sound effects: on' : '♪ Sound effects: off'); if (RecordNarration.soundEnabled) RecordNarration.chime(); });
+  $('#rec-sound')?.addEventListener('click', () => { toggleSound(); });
+  updateSoundUI();
   bindQA(c); attachPreview($('#rec-preview'), c.id, 'record'); $('#rec-title').focus({ preventScroll: true });
-  // Use the same real UI action as the visitor: opening a record activates Listen.
-  $('#rec-listen')?.click();
 }
 function renderRecord(c) {
   const story = S.locale === 'ar' ? (S.ar.story?.[c.id] || c.story) : c.story;
@@ -626,8 +650,8 @@ function renderRecord(c) {
   <p><b>${esc(c.location)}</b></p><p class="muted">${esc(c.locationNote || '')} ${esc(c.sceneNote || '')}</p>
   <h3>${S.locale === 'ar' ? ui('theStory') : 'The story'}</h3>
   <p class="badge voice-b">${S.locale === 'ar' ? ui('storyVoice') : 'Told in first person · creative narration, not the spacecraft literally speaking'}</p>
-  <div class="prose" id="rec-story-text" aria-live="off"><div class="rec-story-line" id="rec-story-line" data-full-text="${esc(narrativeText)}"></div></div>
-  <div class="row"><button type="button" class="btn ghost" id="rec-listen" aria-pressed="false">${S.locale === 'ar' ? ui('listenStory') : '🔊 Listen to the story'}</button><button type="button" class="btn ghost" id="rec-sound" aria-pressed="true">${S.locale === 'ar' ? ui('soundOn') : '♪ Sound effects: on'}</button>${Speech.ok ? '' : `<span class="muted">${S.locale === 'ar' ? ui('speechUnavailable') : 'Speech is unavailable; the story will appear as text.'}</span>`}</div>
+  <div class="prose" id="rec-story-text" aria-live="off"><div class="rec-story-line" id="rec-story-line" data-full-text="${esc(narrativeText)}">${esc(narrativeText)}</div></div>
+  <div class="row"><button type="button" class="btn ghost" id="rec-listen" aria-pressed="false">${S.locale === 'ar' ? ui('listenStory') : '🔊 Listen to the story'}</button><button type="button" class="btn ghost" id="rec-sound" aria-pressed="false">${S.locale === 'ar' ? ui('soundOff') : '♪ Sound effects: off'}</button>${Speech.ok ? '' : `<span class="muted">${S.locale === 'ar' ? ui('speechUnavailable') : 'Speech is unavailable; the story will appear as text.'}</span>`}</div>
   <h3>${S.locale === 'ar' ? ui('whatTaught') : 'What it taught us'}</h3>
   <div class="cards">${c.whatITaught.map(t => `<section class="card"><span class="badge sci-b">${S.locale === 'ar' ? ui('science') : 'Science'}</span><h4>${esc(t.title)}</h4><p>${esc(t.text)}</p></section>`).join('')}</div>
   <h3>${S.locale === 'ar' ? ui('funFacts') : 'Fun facts'}</h3>
@@ -685,7 +709,7 @@ function worldChip(w) {
   chip.innerHTML = `<button type="button" class="close" aria-label="${S.locale === 'ar' ? ui('closes') : 'Close'}" id="wc-x">✕</button><h2>${esc(world.name)}</h2><p>${esc(world.blurb)}</p>
     ${here.length ? `<p class="muted small">${S.locale === 'ar' ? ui('explorersHere') : 'Explorers here:'}</p><div class="qa-chips">${here.map(c => `<button type="button" class="chip" data-id="${esc(c.id)}" style="--accent:${accent(c)}">${esc(c.name)}</button>`).join('')}</div>` : `<p class="muted small">${S.locale === 'ar' ? ui('nobodyHere') : 'No explorer of this garden rests here. Look for them on the Moon, Mars and in deep space.'}</p>`}`;
   $('#wc-x').addEventListener('click', () => { chip.hidden = true; }); $$('.chip[data-id]', chip).forEach(b => b.addEventListener('click', () => openRecord(b.dataset.id, b)));
-  S.scene?.focusWorld(w.id); if (w.filter) setFilterUI(w.filter);
+  soundManager.play('scan'); S.scene?.focusWorld(w.id); if (w.filter) setFilterUI(w.filter);
 }
 async function startExplore(arg) {
   const loading = $('#gl-loading'), fb = $('#gl-fallback');
@@ -699,7 +723,7 @@ async function startExplore(arg) {
           onArtifact: id => openRecord(id), onWorld: worldChip, onProgress: t => { $('#gl-loading-msg').textContent = S.locale === 'ar' ? 'نضيء النجوم…' : t; },
           onError: e => fallback(S.locale === 'ar' ? `${ui('webglStopped')} (${e.message})` : 'The 3D view stopped (' + e.message + '). Reload to try again, or use the story list:') });
         sc.updateLocalization(S.order.map(localizedRecord), S.worlds, S.locale === 'ar' ? S.ar.worlds : null);
-        await sc.init(); return sc;
+        await sc.init(); soundManager.play('ignition'); return sc;
       });
       S.scene = await S.scenePromise;
     }
@@ -730,21 +754,40 @@ function openCredits() {
 }
 function bindGlobal() {
   const menu = $('#menu-toggle'), nav = $('#main-nav');
+  const resumeSavedAudio = () => { if (soundManager.enabled) soundManager.activate(); };
+  document.addEventListener('pointerdown', resumeSavedAudio);
+  document.addEventListener('keydown', resumeSavedAudio);
   const closeMenu = () => { if (!menu || !nav) return; menu.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; updateMenuToggle(); };
   menu?.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', String(open)); nav.dataset.open = String(open); updateMenuToggle(); });
   nav?.addEventListener('click', e => { if (e.target.closest('a,button')) closeMenu(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   document.addEventListener('click', e => { if (menu?.getAttribute('aria-expanded') === 'true' && !e.target.closest('.topbar')) closeMenu(); });
   $('#language-toggle').addEventListener('click', () => { S.i18n = S.locale === 'en' ? S.ar : S.en; setLocale(S.locale === 'en' ? 'ar' : 'en'); });
+  $('#sound-toggle').addEventListener('click', () => toggleSound());
+  $('#sound-settings-open').addEventListener('click', () => { const d = $('#sound-settings'); updateSoundUI(); d.showModal(); $('#sound-title').focus({ preventScroll: true }); });
+  $('#sound-settings-close').addEventListener('click', () => $('#sound-settings').close());
+  $('#sound-enable').addEventListener('change', async e => { await soundManager.setEnabled(e.currentTarget.checked); updateSoundUI(); if (soundManager.enabled) soundManager.play('ui'); });
+  $('#sound-effects-volume').addEventListener('input', e => soundManager.setEffectsVolume(e.currentTarget.value));
+  $('#sound-music-volume').addEventListener('input', e => soundManager.setMusicVolume(e.currentTarget.value));
+  $('#sound-ambient').addEventListener('change', async e => { await soundManager.setAmbient(e.currentTarget.checked); updateSoundUI(); });
+  $('.filters')?.addEventListener('click', e => { if (e.target.closest('button')) soundManager.play('select'); });
   $('#open-credits').addEventListener('click', openCredits); $('#open-credits-2').addEventListener('click', openCredits);
   for (const d of $$('dialog')) {
     d.addEventListener('click', e => { if (e.target === d) d.close(); }); // click on backdrop
     d.addEventListener('close', () => {
       Speech.stop(); if (d.id === 'record') { RecordNarration.stop(); detachPreview('record'); if (S.view === 'story' && steps[S.step]?.t === 'char') attachPreview($('#story-preview'), steps[S.step].c.id, 'story'); }
-      S.lastFocus?.focus?.({ preventScroll: true });
+      if (d.id === 'sound-settings') $('#sound-settings-open').focus({ preventScroll: true });
+      else S.lastFocus?.focus?.({ preventScroll: true });
     });
   }
   addEventListener('pagehide', () => { RecordNarration.dispose(); Speech.stop(); S.scene?.dispose(); S.preview?.dispose(); S.starfield?.dispose(); });
+  addEventListener('pagehide', () => soundManager.dispose());
+}
+
+async function toggleSound() {
+  await soundManager.setEnabled(!soundManager.enabled);
+  updateSoundUI();
+  if (soundManager.enabled) soundManager.play('ui');
 }
 
 if (location.search.includes('debug')) window.__athar = S;

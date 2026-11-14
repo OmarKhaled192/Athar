@@ -5,7 +5,7 @@ import path from 'node:path';
 
  test('story, quizzes, finale badge and print summary', async ({ page }) => {
   await page.goto('/'); await page.getByRole('link', { name: /Start the Story/ }).click();
-   await expect(page.locator('#story-title')).toContainText('Four explorers');
+   await expect(page.locator('#story-title')).toHaveText('Five explorers. Four stories. One garden.');
    await page.locator('#story-next').click();
    for (const name of ['Eagle (ascent stage)', 'Pioneer 10', 'Opportunity', 'Ingenuity']) {
     await expect(page.locator('#story-title')).toContainText(name); await expect(page.locator('.quiz-question')).toHaveCount(2);
@@ -51,6 +51,9 @@ test('record narration reveals words only on speech boundaries and resets on reo
   await page.goto('/#explore');
   await page.locator('#explorer-list button').first().click();
   await expect(page.locator('#record')).toBeVisible();
+  await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#rec-story-line')).not.toBeEmpty();
+  await page.locator('#rec-listen').click();
   await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'true');
   const spans = page.locator('#rec-story-line .word-hidden, #rec-story-line .word-visible');
   await expect(page.locator('#rec-story-line .word-hidden')).not.toHaveCount(0);
@@ -75,6 +78,9 @@ test('record narration reveals words only on speech boundaries and resets on reo
   await expect(page.locator('#record')).not.toBeVisible();
   expect(await page.evaluate(() => window.__speechCancelCount)).toBeGreaterThan(0);
   await page.locator('#explorer-list button').first().click();
+  await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'false');
+  await expect(page.locator('#rec-story-line')).not.toBeEmpty();
+  await page.locator('#rec-listen').click();
   await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#rec-story-line .word-visible')).toHaveCount(0);
   await page.waitForTimeout(900);
@@ -87,14 +93,15 @@ test('language switch sets and persists RTL', async ({ page }) => {
   await page.goto('/'); await expect(page.locator('#boot')).toBeHidden();
   await page.getByRole('button', { name: 'Switch to Arabic' }).click();
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(page.locator('#sound-toggle')).toHaveText('الصوت متوقف');
   await expect(page.locator('nav [data-nav="home"]')).toHaveText('الرئيسية');
   await expect(page.locator('#boot p')).toHaveText('نوقظ الحديقة…');
-  await expect(page.locator('#steles')).toHaveAttribute('aria-label', 'المستكشفون الأربعة');
+  await expect(page.locator('#steles')).toHaveAttribute('aria-label', 'أربع بطاقات تضم خمسة مستكشفين');
   await expect(page.locator('.hero h1 em')).toHaveText('كل مهمة تترك أثراً');
   await page.locator('.cta a[href="#story"]').click();
-  await expect(page.locator('#story-title')).toHaveText('أربعة مستكشفين. أربع مهمات. حديقة واحدة.');
+  await expect(page.locator('#story-title')).toHaveText('خمسة مستكشفين. أربع قصص. حديقة واحدة.');
   await page.locator('#story-next').click();
-  await expect(page.locator('.kicker')).toContainText('مستكشف 1 من 4');
+  await expect(page.locator('#story-text .kicker')).toContainText('مستكشف 1 من 4');
   await expect(page.locator('#st-listen')).toHaveText('🔊 استمع');
   await page.locator('#st-more').click();
   await expect(page.locator('#rec-title')).toHaveText('إيغل (مرحلة الصعود)');
@@ -117,10 +124,10 @@ test('language switch sets and persists RTL', async ({ page }) => {
   await page.reload();
   await expect(page.locator('#boot')).toBeHidden();
   await expect(page.locator('html')).toHaveAttribute('lang', 'ar');
-  await expect(page.locator('#story-title')).toHaveText('أربعة مستكشفين. أربع مهمات. حديقة واحدة.');
+  await expect(page.locator('#story-title')).toHaveText('خمسة مستكشفين. أربع قصص. حديقة واحدة.');
   await page.getByRole('button', { name: /التبديل إلى الإنجليزية/ }).click();
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
-  await expect(page.locator('#story-title')).toHaveText('Four explorers. Four missions. One garden.');
+  await expect(page.locator('#story-title')).toHaveText('Five explorers. Four stories. One garden.');
 });
 
 test('mobile has no horizontal overflow and passes axe', async ({ page }) => {
@@ -170,6 +177,49 @@ test('WebGL failure exposes the story fallback', async ({ page }) => {
 
 test('offline app shell is served by service worker', async ({ page, context }) => {
   await page.goto('/'); await page.waitForTimeout(1200);
-  await expect.poll(() => page.evaluate(() => caches.keys())).toContain('athar-static-v2');
+  await expect.poll(() => page.evaluate(() => caches.keys())).toContain('athar-static-v8');
   await page.reload(); await context.setOffline(true); await page.goto('/'); await expect(page.locator('#steles .stele')).toHaveCount(4);
+});
+
+test('sound remains opt-in, settings persist, and volume controls stay independent', async ({ page }) => {
+  await page.addInitScript(() => {
+    const NativeAudioContext = window.AudioContext;
+    window.__audioContextsCreated = 0;
+    if (NativeAudioContext) window.AudioContext = class extends NativeAudioContext {
+      constructor(...args) { super(...args); window.__audioContextsCreated++; }
+    };
+  });
+  await page.goto('/');
+  await expect(page.locator('#sound-toggle')).toHaveAttribute('aria-pressed', 'false');
+  expect(await page.evaluate(() => window.__audioContextsCreated)).toBe(0);
+  await expect(page.locator('#rec-listen')).toHaveCount(0);
+
+  await page.locator('#sound-settings-open').click();
+  await expect(page.locator('#sound-settings')).toBeVisible();
+  await page.locator('#sound-enable').check();
+  await expect(page.locator('#sound-toggle')).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => window.__audioContextsCreated)).toBe(1);
+  await page.locator('#sound-effects-volume').evaluate(el => { el.value = '0.37'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#sound-music-volume').evaluate(el => { el.value = '0.08'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.locator('#sound-ambient').check();
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('athar-sound-preferences')).ambient)).toBe(true);
+  await page.locator('#sound-settings-close').click();
+  await page.locator('#sound-toggle').click();
+  await expect(page.locator('#sound-toggle')).toHaveAttribute('aria-pressed', 'false');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('athar-sound-preferences')))).toMatchObject({ enabled: false, effects: 0.37, music: 0.08, ambient: true });
+  await page.reload();
+  await expect(page.locator('#sound-toggle')).toHaveAttribute('aria-pressed', 'false');
+  await page.locator('#sound-settings-open').click();
+  await expect(page.locator('#sound-effects-volume')).toHaveValue('0.37');
+  await expect(page.locator('#sound-music-volume')).toHaveValue('0.08');
+  await expect(page.locator('#sound-ambient')).toBeChecked();
+  await page.locator('#sound-settings-close').click();
+  await page.locator('#sound-settings-open').click();
+  await page.locator('#sound-enable').check();
+  await page.locator('#sound-settings-close').click();
+  await page.reload();
+  await expect(page.locator('#sound-toggle')).toHaveAttribute('aria-pressed', 'true');
+  expect(await page.evaluate(() => window.__audioContextsCreated)).toBe(0);
+  await page.locator('.cta a[href="#story"]').click();
+  expect(await page.evaluate(() => window.__audioContextsCreated)).toBe(1);
 });

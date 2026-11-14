@@ -1262,6 +1262,20 @@ dialog::backdrop {
   border-radius: 20px
 }
 
+#sound-settings {
+  margin: auto;
+  height: auto;
+  max-height: min(90dvh, 620px);
+  border-radius: 20px;
+  width: min(520px, calc(100vw - 24px));
+}
+.sound-settings h2 { margin: 4px 48px 8px 0; font-size: clamp(1.5rem, 4vw, 2rem); }
+.sound-settings .kicker { color: var(--cyan); font-size: .78rem; font-weight: 700; letter-spacing: .12em; }
+.sound-option, .sound-range { display: flex; align-items: center; gap: 12px; min-height: 52px; margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: rgba(4,10,24,.5); }
+.sound-option input { width: 20px; height: 20px; accent-color: var(--cyan); }
+.sound-range { justify-content: space-between; flex-wrap: wrap; }
+.sound-range input { flex: 1 1 150px; accent-color: var(--cyan); min-height: 32px; }
+
 .rec-wrap {
   position: relative;
   padding: 22px clamp(16px, 3vw, 30px) 40px

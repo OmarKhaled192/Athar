@@ -1,5 +1,5 @@
-const CACHE = 'athar-static-v6';
-const FILES = ['./', './index.html', './css/styles.css', './js/app.js', './js/models.js', './js/scene.js', './data/characters.json', './data/worlds.json', './data/i18n/en.json', './data/i18n/ar.json', './vendor/three.module.min.js', './vendor/addons/OrbitControls.js'];
+const CACHE = 'athar-static-v8';
+const FILES = ['./', './index.html', './css/styles.css', './js/app.js', './js/sound.js', './js/models.js', './js/scene.js', './data/characters.json', './data/worlds.json', './data/i18n/en.json', './data/i18n/ar.json', './vendor/three.module.min.js', './vendor/addons/OrbitControls.js'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('athar-static-') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', event => { const request = event.request; if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return; event.respondWith(caches.match(request).then(cached => cached || fetch(request).then(response => { if (response.ok) { const copy = response.clone(); caches.open(CACHE).then(cache => cache.put(request, copy)); } return response; }).catch(() => caches.match('./index.html')))); });

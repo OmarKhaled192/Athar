@@ -56,6 +56,8 @@
         <a href="#story" data-nav="story">Story</a>
         <a href="#explore" data-nav="explore">Garden</a>
         <button type="button" id="open-credits">Credits</button>
+        <button type="button" id="sound-toggle" aria-label="Enable sound" aria-pressed="false">Sound off</button>
+        <button type="button" id="sound-settings-open">Sound settings</button>
         <button type="button" id="language-toggle" aria-label="Switch to Arabic" lang="ar">العربية</button>
       </nav>
     </header>
@@ -181,6 +183,20 @@
     <!-- CREDITS DIALOG -->
     <dialog id="credits" aria-labelledby="cr-title">
       <div class="rec-wrap" id="cr-body"></div>
+    </dialog>
+
+    <dialog id="sound-settings" aria-labelledby="sound-title">
+      <section class="sound-settings rec-wrap">
+        <button type="button" class="close" id="sound-settings-close" aria-label="Close sound settings">✕</button>
+        <p class="kicker">ATHAR · AUDIO</p>
+        <h2 id="sound-title" tabindex="-1">Sound settings</h2>
+        <p class="muted" id="sound-help">Sound is off until you turn it on. Your choices stay on this device.</p>
+        <label class="sound-option"><input id="sound-enable" type="checkbox"> <span id="sound-enable-label">Enable sound effects</span></label>
+        <label class="sound-range" for="sound-effects-volume"><span id="sound-effects-label">Effects volume</span><input id="sound-effects-volume" type="range" min="0" max="1" step="0.01" value="0.24"></label>
+        <label class="sound-option"><input id="sound-ambient" type="checkbox"> <span id="sound-ambient-label">Quiet space ambience (optional)</span></label>
+        <label class="sound-range" for="sound-music-volume"><span id="sound-music-label">Ambience volume</span><input id="sound-music-volume" type="range" min="0" max="1" step="0.01" value="0.12"></label>
+        <p class="muted small" id="sound-note">Soft synthesized tones; no audio plays unless enabled.</p>
+      </section>
     </dialog>
 
     <script>
