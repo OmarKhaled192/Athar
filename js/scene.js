@@ -59,10 +59,10 @@ export class ExploreScene {
     // explorers
     const byId = Object.fromEntries(this.data.map(c => [c.id, c]));
     this._addArtifact(byId['pioneer-10'], () => {
-      const g = new THREE.Group(); g.position.set(34, 12, -58); g.add(this._model('pioneer-10', 2.6)); this.scene.add(g);
+      const g = new THREE.Group(); g.position.set(34, 12, -58); g.add(this._model('pioneer-10', 1.25)); this.scene.add(g);
       g.rotation.y = -0.5; return { anchor: g, tagY: 3.4 };
     });
-    this._addArtifact(byId['opportunity'], () => this._onSurface('opportunity', this.mars, 0.78, 8, -6, 0.24));
+    this._addArtifact(byId['opportunity'], () => this._onSurface('opportunity', this.mars, 0.62, 8, -6, 0.24));
     this._addArtifact(byId['ingenuity'], () => {
       const r = this._onSurface('ingenuity', this.mars, 0.62, 24, 14, 1.15); r.hover = true; return r;
     });

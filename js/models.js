@@ -205,22 +205,62 @@ function ingenuity() {
 
 function eagle() {
   const g = new THREE.Group();
-  g.add(mesh(cyl(0.62, 0.62, 0.78, 8), M.gold(), [0, 0, 0]));                                      // cabin (octagonal-ish)
-  g.add(mesh(cyl(0.64, 0.64, 0.06, 8), M.metal(), [0, 0.42, 0]));
-  g.add(mesh(cyl(0.2, 0.24, 0.26, 12), M.metal(), [0, 0.58, 0]));                                  // docking tunnel
-  g.add(mesh(cyl(0.2, 0.46, 0.34, 14), M.dark(), [0, -0.56, 0]));                                  // engine cover/bell
-  for (const sx of [-1, 1]) g.add(mesh(box(0.2, 0.2, 0.03), M.glass(), [sx * 0.22, 0.12, 0.6], [0.35, sx * 0.25, 0])); // windows
-  for (let i = 0; i < 4; i++) {                                                                    // RCS quads
-    const a = Math.PI / 4 + i * Math.PI / 2;
-    g.add(mesh(box(0.1, 0.22, 0.1), M.metal(), [Math.cos(a) * 0.74, -0.08, Math.sin(a) * 0.74], [0, -a, 0]));
+  const panel = new THREE.MeshStandardMaterial({ color: 0xe8d4ae, metalness: .24, roughness: .48, flatShading: true });
+  const panelLight = new THREE.MeshStandardMaterial({ color: 0xf5e8ce, metalness: .16, roughness: .52, flatShading: true });
+  const foil = new THREE.MeshStandardMaterial({ color: 0xb66b2e, metalness: .56, roughness: .36, flatShading: true });
+  const foilBright = new THREE.MeshStandardMaterial({ color: 0xe09b43, metalness: .48, roughness: .38 });
+  const charcoal = new THREE.MeshStandardMaterial({ color: 0x292b34, metalness: .52, roughness: .42 });
+  const gold = new THREE.MeshStandardMaterial({ color: 0xd9a04c, metalness: .58, roughness: .34 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0xaeb5bd, metalness: .78, roughness: .28 });
+  const glass = new THREE.MeshStandardMaterial({ color: 0x17243a, metalness: .46, roughness: .16 });
+  const eye = new THREE.MeshStandardMaterial({ color: 0x131d30, metalness: .28, roughness: .14 });
+  const glow = new THREE.MeshStandardMaterial({ color: 0xffd991, emissive: 0xffa82f, emissiveIntensity: .18, roughness: .24 });
+  const add = (geom, material, pos=[0,0,0], rot=[0,0,0]) => { const o=mesh(geom,material,pos,rot); g.add(o); return o; };
+  const ball = (r,material,pos,scale=[1,1,1]) => { const o=add(new THREE.SphereGeometry(r,16,10),material,pos); o.scale.set(...scale); return o; };
+  const strut = (a,b,r,material) => { const p=new THREE.Vector3(...a), q=new THREE.Vector3(...b), d=q.clone().sub(p); const o=add(new THREE.CylinderGeometry(r*.8,r,d.length(),10)); o.position.copy(p).add(q).multiplyScalar(.5); o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()); return o; };
+
+  // Gold-foil descent section and its angular ascent cabin.
+  add(new THREE.CylinderGeometry(.59,.72,.62,8),foil,[0,.05,0]);
+  add(new THREE.CylinderGeometry(.72,.72,.08,8),charcoal,[0,-.3,0]);
+  add(new THREE.CylinderGeometry(.63,.82,.84,6),panel,[0,.82,0],[0,Math.PI/6,0]);
+  add(new THREE.CylinderGeometry(.66,.66,.1,8),gold,[0,1.27,0]);
+  // Broad front hatch, windows, and a friendly face on the front cabin panel.
+  add(new THREE.BoxGeometry(.76,.53,.055),panelLight,[0,.87,.66]);
+  add(new THREE.BoxGeometry(.55,.3,.035),glass,[0,.96,.703]);
+  for(const x of [-.18,.18]) { ball(.09,steel,[x,1.0,.738],[1,1,.42]); ball(.054,eye,[x,1.0,.766],[1,1,.45]); ball(.021,glow,[x-.02,1.025,.781],[1,1,.45]); }
+  add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(-.08,.82,.75),new THREE.Vector3(0,.79,.77),new THREE.Vector3(.08,.82,.75)]),12,.012,7,false),charcoal);
+  // Faceted side insulation panels and small corner hardware.
+  for(let i=0;i<6;i++) {
+    const a=i*Math.PI/3+Math.PI/6, x=Math.cos(a)*.7, z=Math.sin(a)*.7;
+    add(new THREE.BoxGeometry(.34,.55,.035),i%2?charcoal:panelLight,[x,.82,z],[0,-a,0]);
+    ball(.045,gold,[Math.cos(a)*.84,.72,Math.sin(a)*.84]);
   }
-  g.add(mesh(cyl(0.015, 0.015, 0.55), M.metal(), [0.45, 0.78, -0.2], [0, 0, -0.25]));
-  const ant = dish(0.22, 0.4, M.white()); ant.position.set(0.55, 1.05, -0.2); ant.rotation.set(0.3, 0, -0.5); g.add(ant);
-  const rad = dish(0.1, 0.4, M.white()); rad.position.set(-0.3, 0.72, 0.2); rad.rotation.set(0.4, 0, 0.2); g.add(rad);
+  // Shimmering foil facets beneath the crew cabin.
+  for(let i=0;i<8;i++) { const a=i*Math.PI/4; add(new THREE.BoxGeometry(.28,.42,.035),i%2?foilBright:foil,[Math.cos(a)*.63,-.02,Math.sin(a)*.63],[0,-a,0]); }
+  // Four long landing struts, cross-braces, and round footpads.
+  for(let i=0;i<4;i++) {
+    const a=Math.PI/4+i*Math.PI/2, sx=Math.cos(a), sz=Math.sin(a);
+    const top=[sx*.48,-.14,sz*.48], knee=[sx*.85,-.68,sz*.85], foot=[sx*1.2,-1.27,sz*1.2];
+    strut(top,knee,.085,charcoal); ball(.1,gold,knee); strut(knee,foot,.062,foilBright);
+    strut([sx*.55,-.35,sz*.55],[sx*1.03,-.35,sz*1.03],.035,steel);
+    add(new THREE.CylinderGeometry(.22,.25,.07,16),gold,[foot[0],foot[1]-.05,foot[2]]);
+    add(new THREE.CylinderGeometry(.16,.18,.035,16),charcoal,[foot[0],foot[1]-.095,foot[2]]);
+  }
+  // Ascent engine bell, docking tunnel, antennas, and small dish antennas.
+  add(new THREE.CylinderGeometry(.25,.43,.38,12),charcoal,[0,-.55,0]);
+  add(new THREE.CylinderGeometry(.22,.22,.32,12),steel,[0,1.47,0]);
+  add(new THREE.CylinderGeometry(.055,.08,.25,10),gold,[0,1.73,0]);
+  for(const sx of [-1,1]) {
+    strut([sx*.34,1.3,-.16],[sx*.56,1.72,-.2],.035,steel);
+    const dishPart=dish(.16,.34,panelLight); dishPart.position.set(sx*.58,1.78,-.2); dishPart.rotation.set(.35,0,-sx*.35); g.add(dishPart);
+    add(new THREE.BoxGeometry(.16,.22,.14),charcoal,[sx*.72,.54,0],[0,0,sx*.2]);
+  }
+  add(new THREE.CylinderGeometry(.018,.018,.46,8),steel,[.36,1.55,.2],[0,0,-.18]);
+  ball(.035,foilBright,[.4,1.79,.2]);
   return fit(g, 1);
 }
 
-const BUILDERS = { 'pioneer-10': pioneer, opportunity: characterOpportunity, ingenuity: characterIngenuity, eagle };
+const BUILDERS = { 'pioneer-10': characterPioneer, opportunity: characterOpportunity, ingenuity: characterIngenuity, eagle };
 export function buildModel(id) { return (BUILDERS[id] || eagle)(); }
 
 /* Character illustration shared by the story, record, and garden renderers. */
@@ -373,6 +413,62 @@ function characterOpportunity() {
   return g;
 }
 
+/* Character-style Pioneer 10, borrowing the friendly communication-dish
+   silhouette in the supplied Voyager reference while retaining Pioneer details. */
+function characterPioneer() {
+  const g=new THREE.Group();
+  const mat=(color,metalness=.28,roughness=.42)=>new THREE.MeshStandardMaterial({color,metalness,roughness,side:THREE.DoubleSide});
+  const gold=mat(0xd59b45,.55,.34), goldLight=mat(0xf0c273,.38,.35), copper=mat(0x96542f,.48,.38);
+  const cream=mat(0xf0e4c9,.12,.5), dark=mat(0x222839,.42,.4), metal=mat(0xb2bcc9,.72,.3), blue=mat(0x253b63,.4,.3);
+  const glow=mat(0xffd98b,.12,.24), lens=mat(0x18263d,.5,.16), red=mat(0xe75e4d,.22,.32), teal=mat(0x56c8b3,.22,.35);
+  const add=(geom,material,pos=[0,0,0],rot=[0,0,0],parent=g)=>{const o=new THREE.Mesh(geom,material);o.position.set(...pos);o.rotation.set(...rot);parent.add(o);return o;};
+  const ball=(r,material,pos,scale=[1,1,1])=>{const o=add(new THREE.SphereGeometry(r,18,12),material,pos);o.scale.set(...scale);return o;};
+  const rod=(a,b,r,material,parent=g)=>{const p=new THREE.Vector3(...a),q=new THREE.Vector3(...b),d=q.clone().sub(p);const o=add(new THREE.CylinderGeometry(r*.8,r,d.length(),12),material,[0,0,0],[0,0,0],parent);o.position.copy(p).add(q).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return o;};
+
+  // Compact instrument bus and dark-blue equipment band behind the dish.
+  add(new THREE.CylinderGeometry(.42,.5,.72,10),gold,[0,.13,-.35],[0,0,0]);
+  add(new THREE.CylinderGeometry(.48,.48,.12,10),blue,[0,.1,-.35],[0,0,0]);
+  add(new THREE.BoxGeometry(.56,.42,.46),goldLight,[0,.23,-.84]);
+  for(const [x,c] of [[-.19,red],[0,teal],[.19,glow]]) ball(.055,c,[x,.3,-.595],[1,1,.55]);
+  // Large parabolic communication dish faces forward; spokes converge at the feed.
+  const reflector=new THREE.Group();g.add(reflector);reflector.position.set(0,.35,.14);reflector.rotation.x=-Math.PI/2;
+  add(new THREE.SphereGeometry(.94,32,20,0,Math.PI*2,0,Math.PI/2),goldLight,[0,0,0],[0,0,0],reflector);
+  add(new THREE.TorusGeometry(.94,.045,10,48),copper,[0,0,0],[0,0,0],reflector);
+  const feed=new THREE.Group();g.add(feed);feed.position.set(0,.35,.18);
+  for(let i=0;i<4;i++){const a=i*Math.PI/2;rod([Math.cos(a)*.12,.0,0],[Math.cos(a)*.78,.0,.12],.018,copper,feed);}
+  rod([0,0,.04],[0,0,.26],.045,metal,feed);
+  ball(.13,copper,[0,.35,.45],[1,1,.7]);ball(.065,goldLight,[0,.35,.5],[1,1,.55]);
+  // Bright curious eyes and a small smile sit inside the reflector like the reference.
+  for(const x of [-.3,.3]){ball(.19,cream,[x,.48,.19],[1,1,.46]);ball(.13,dark,[x,.48,.265],[1,1,.42]);ball(.085,lens,[x,.48,.31],[1,1,.4]);ball(.031,glow,[x-.025,.515,.34],[1,1,.45]);}
+  const smile=new THREE.CatmullRomCurve3([new THREE.Vector3(-.13,.12,.205),new THREE.Vector3(0,.075,.22),new THREE.Vector3(.13,.12,.205)]);
+  add(new THREE.TubeGeometry(smile,16,.018,8,false),copper);
+  // Mast and small instrument cluster above the bus.
+  rod([0,.52,-.45],[0,1.24,-.45],.055,metal);
+  add(new THREE.BoxGeometry(.42,.24,.25),goldLight,[0,1.32,-.45]);
+  for(const x of [-.12,.12]){ball(.07,lens,[x,1.33,-.305],[1,1,.6]);ball(.027,glow,[x,1.33,-.265],[1,1,.55]);}
+  rod([.28,.55,-.52],[.5,.9,-.52],.022,metal);ball(.055,red,[.5,.92,-.52]);
+  // Three long antenna booms / tripod supports with articulated joints and feet.
+  for(let i=0;i<3;i++){
+    const a=i*Math.PI*2/3+Math.PI/2, start=[Math.cos(a)*.28,-.15,-.35+Math.sin(a)*.28], knee=[Math.cos(a)*.78,-.78,-.35+Math.sin(a)*.78], foot=[Math.cos(a)*1.22,-1.35,-.35+Math.sin(a)*1.22];
+    rod(start,knee,.055,dark);ball(.105,goldLight,knee);rod(knee,foot,.04,copper);
+    add(new THREE.BoxGeometry(.23,.13,.18),blue,foot);add(new THREE.BoxGeometry(.16,.035,.12),metal,[foot[0],foot[1]-.08,foot[2]]);
+  }
+  // RTG power boom and two compact generator capsules.
+  rod([.38,.15,-.45],[1.03,.3,-.48],.045,metal);ball(.085,teal,[1.03,.3,-.48]);
+  rod([1.03,.3,-.48],[1.63,.3,-.48],.035,goldLight);
+  for(const x of [1.35,1.62]){
+    add(new THREE.CylinderGeometry(.12,.12,.3,12),copper,[x,.3,-.48],[0,0,Math.PI/2]);
+    add(new THREE.CylinderGeometry(.13,.13,.045,12),goldLight,[x-.12,.3,-.48],[0,0,Math.PI/2]);
+    add(new THREE.CylinderGeometry(.13,.13,.045,12),goldLight,[x+.12,.3,-.48],[0,0,Math.PI/2]);
+  }
+  // Thin magnetometer boom and a tiny engraved-record medallion on the bus.
+  rod([-.3,.06,-.48],[-1.58,-.45,-.48],.025,metal);
+  add(new THREE.BoxGeometry(.22,.18,.17),blue,[-1.62,-.48,-.48]);ball(.075,goldLight,[-.15,.18,-.58],[1,1,.22]);
+  for(let i=0;i<3;i++)add(new THREE.TorusGeometry(.028+i*.02,.006,6,24),copper,[-.15,.18,-.53-i*.002]);
+  g.rotation.y=-.32;
+  return g;
+}
+
 /** Per-frame model animation (e.g., Ingenuity rotors). */
 export function animateModel(model, dt) {
   if (model.userData.rotors) for (const r of model.userData.rotors) r.rotation.y += dt * 38 * r.userData.spin;
@@ -403,9 +499,11 @@ export class Preview {
     this.detach(); this.el = el;
     if (this.model) { this.pivot.remove(this.model); }
     // Keep the established 3D garden models unchanged. The story and record
-    // preview uses character-style illustrations for Opportunity and Ingenuity.
-    this.model = id === 'ingenuity' ? characterIngenuity() : id === 'opportunity' ? characterOpportunity() : buildModel(id);
+    // Preview and garden share the same character-style Pioneer and Mars rovers.
+    this.model = buildModel(id);
+    if (id === 'opportunity') this.model.scale.setScalar(0.68);
     if (id === 'ingenuity') { this.model.scale.setScalar(0.76); this.model.position.y = 0.3; }
+    if (id === 'pioneer-10') this.model.scale.setScalar(0.62);
     this.pivot.add(this.model);
     this.model.rotation.x = id === 'eagle' || id === 'ingenuity' ? 0.18 : 0.28;
     el.appendChild(this.renderer.domElement);
