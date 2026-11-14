@@ -51,9 +51,6 @@ test('record narration reveals words only on speech boundaries and resets on reo
   await page.goto('/#explore');
   await page.locator('#explorer-list button').first().click();
   await expect(page.locator('#record')).toBeVisible();
-  await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'false');
-  await expect(page.locator('#rec-story-line')).not.toBeEmpty();
-  await page.locator('#rec-listen').click();
   await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'true');
   const spans = page.locator('#rec-story-line .word-hidden, #rec-story-line .word-visible');
   await expect(page.locator('#rec-story-line .word-hidden')).not.toHaveCount(0);
@@ -78,9 +75,6 @@ test('record narration reveals words only on speech boundaries and resets on reo
   await expect(page.locator('#record')).not.toBeVisible();
   expect(await page.evaluate(() => window.__speechCancelCount)).toBeGreaterThan(0);
   await page.locator('#explorer-list button').first().click();
-  await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'false');
-  await expect(page.locator('#rec-story-line')).not.toBeEmpty();
-  await page.locator('#rec-listen').click();
   await expect(page.locator('#rec-listen')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#rec-story-line .word-visible')).toHaveCount(0);
   await page.waitForTimeout(900);

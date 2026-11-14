@@ -624,6 +624,8 @@ function openRecord(id, opener, force = false) {
   $('#rec-sound')?.addEventListener('click', () => { toggleSound(); });
   updateSoundUI();
   bindQA(c); attachPreview($('#rec-preview'), c.id, 'record'); $('#rec-title').focus({ preventScroll: true });
+  // Opening a record is a deliberate user action; start its spoken story immediately.
+  if (!force) $('#rec-listen')?.click();
 }
 function renderRecord(c) {
   const story = S.locale === 'ar' ? (S.ar.story?.[c.id] || c.story) : c.story;
