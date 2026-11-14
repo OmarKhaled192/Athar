@@ -35,6 +35,7 @@ function translateStatic() {
       const value = ui(key);
       if (selector === '.brand') el.setAttribute('aria-label', value);
       else if (selector === '#app-error .muted') el.textContent = value;
+      else if (selector.startsWith('nav a[data-nav=')) { const label = $('span', el); if (label) label.textContent = value; else el.textContent = value; }
       else if (selector === '.cta a[href="#story"]') el.innerHTML = `${value} <span aria-hidden="true">▸</span>`;
       else if (selector === '.cta-note') el.innerHTML = `<b>${ui('startStory')}</b> ${value.replace(/^ابدأ القصة\s*/, '')}`;
       else if (selector === '.foot>p:first-child') el.innerHTML = `<b>ATHAR</b> ${value}`;
@@ -87,28 +88,26 @@ function updateSoundUI() {
   if (toggle) {
     toggle.setAttribute('aria-pressed', String(p.enabled));
     toggle.setAttribute('aria-label', ar ? (p.enabled ? 'إيقاف الصوت' : 'تشغيل الصوت') : (p.enabled ? 'Mute sound' : 'Enable sound'));
-    toggle.textContent = ar ? (p.enabled ? 'الصوت يعمل' : 'الصوت متوقف') : (p.enabled ? 'Sound on' : 'Sound off');
+    $('#sound-control').dataset.enabled = String(p.enabled);
+    $('#sound-toggle-label').textContent = ar ? (p.enabled ? 'الصوت يعمل' : 'الصوت متوقف') : (p.enabled ? 'Sound on' : 'Sound off');
   }
   const labels = ar ? {
-    '#sound-settings-open':'إعدادات الصوت', '#sound-settings-close':'إغلاق إعدادات الصوت', '#sound-title':'إعدادات الصوت',
-    '#sound-help':'الصوت متوقف حتى تفعّله. تُحفظ اختياراتك على هذا الجهاز.', '#sound-enable-label':'تفعيل المؤثرات الصوتية',
-    '#sound-effects-label':'مستوى المؤثرات', '#sound-ambient-label':'أجواء فضائية هادئة (اختياري)',
-    '#sound-music-label':'مستوى الأجواء', '#sound-note':'نغمات هادئة مولّدة؛ لا يُشغّل أي صوت ما لم تفعّله.'
+    '#sound-settings-label':'الصوت', '#sound-settings-mobile-label':'إعدادات الصوت', '#sound-settings-close':'إغلاق إعدادات الصوت', '#sound-enable-label':'الصوت', '#language-menu-label':'اللغة',
+    '#sound-effects-label':'مستوى المؤثرات', '#sound-ambient-label':'الموسيقى', '#sound-music-label':'مستوى الموسيقى',
+    '#sound-effects-enable-label':'المؤثرات', '#sound-note':'إعدادات صوت هادئة محفوظة على هذا الجهاز.', '#credits-mobile-label':'المصادر والشكر'
   } : {
-    '#sound-settings-open':'Sound settings', '#sound-settings-close':'Close sound settings', '#sound-title':'Sound settings',
-    '#sound-help':'Sound is off until you turn it on. Your choices stay on this device.', '#sound-enable-label':'Enable sound effects',
-    '#sound-effects-label':'Effects volume', '#sound-ambient-label':'Quiet space ambience (optional)',
-    '#sound-music-label':'Ambience volume', '#sound-note':'Soft synthesized tones; no audio plays unless enabled.'
+    '#sound-settings-label':'Sound', '#sound-settings-mobile-label':'Sound settings', '#sound-settings-close':'Close sound settings', '#sound-enable-label':'Sound', '#language-menu-label':'Language',
+    '#sound-effects-label':'Volume', '#sound-ambient-label':'Music', '#sound-music-label':'Music volume',
+    '#sound-effects-enable-label':'Effects', '#sound-note':'Quiet sound settings saved on this device.', '#credits-mobile-label':'Credits'
   };
   for (const [selector, text] of Object.entries(labels)) {
     const el = $(selector); if (!el) continue;
     if (selector === '#sound-settings-close') el.setAttribute('aria-label', text); else el.textContent = text;
   }
-  const d = $('#sound-settings');
-  if (d && S.locale === 'ar') { d.lang = 'ar'; d.dir = 'rtl'; }
-  else if (d) { d.lang = 'en'; d.dir = 'ltr'; }
   $('#sound-enable').checked = p.enabled; $('#sound-effects-volume').value = String(p.effects);
   $('#sound-ambient').checked = p.ambient; $('#sound-music-volume').value = String(p.music);
+  $('#sound-effects-enable').checked = p.effectsEnabled;
+  $('#language-menu-current').textContent = $('#language-toggle')?.textContent || (ar ? 'English' : 'العربية');
   const recordToggle = $('#rec-sound');
   if (recordToggle) {
     recordToggle.setAttribute('aria-pressed', String(p.enabled));
@@ -755,31 +754,46 @@ function openCredits() {
   $('#cr-close').addEventListener('click', () => d.close()); if (!d.open) d.showModal(); $('#cr-title').focus({preventScroll:true});
 }
 function bindGlobal() {
-  const menu = $('#menu-toggle'), nav = $('#main-nav');
+  const menu = $('#menu-toggle'), menuSheet = $('#mobile-menu-sheet'), soundTrigger = $('#sound-settings-open'), soundPopover = $('#sound-settings');
   const resumeSavedAudio = () => { if (soundManager.enabled) soundManager.activate(); };
   document.addEventListener('pointerdown', resumeSavedAudio);
   document.addEventListener('keydown', resumeSavedAudio);
-  const closeMenu = () => { if (!menu || !nav) return; menu.setAttribute('aria-expanded', 'false'); nav.dataset.open = 'false'; updateMenuToggle(); };
-  menu?.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', String(open)); nav.dataset.open = String(open); updateMenuToggle(); });
-  nav?.addEventListener('click', e => { if (e.target.closest('a,button')) closeMenu(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-  document.addEventListener('click', e => { if (menu?.getAttribute('aria-expanded') === 'true' && !e.target.closest('.topbar')) closeMenu(); });
-  $('#language-toggle').addEventListener('click', () => { S.i18n = S.locale === 'en' ? S.ar : S.en; setLocale(S.locale === 'en' ? 'ar' : 'en'); });
+  const closeMenu = () => { if (!menu || !menuSheet) return; menu.setAttribute('aria-expanded', 'false'); menuSheet.hidden = true; updateMenuToggle(); };
+  const closeSound = (restoreFocus = false) => {
+    soundPopover.hidden = true; soundTrigger.setAttribute('aria-expanded', 'false'); $('#sound-settings-mobile').setAttribute('aria-expanded', 'false');
+    if (restoreFocus) (matchMedia('(max-width: 640px)').matches ? menu : soundTrigger).focus({ preventScroll: true });
+  };
+  const openSound = () => { soundPopover.hidden = false; soundTrigger.setAttribute('aria-expanded', 'true'); $('#sound-settings-mobile').setAttribute('aria-expanded', 'true'); };
+  menu?.addEventListener('click', () => { const open = menu.getAttribute('aria-expanded') !== 'true'; menu.setAttribute('aria-expanded', String(open)); menuSheet.hidden = !open; updateMenuToggle(); });
+  soundTrigger?.addEventListener('click', () => soundPopover.hidden ? openSound() : closeSound());
+  $('#sound-settings-mobile').addEventListener('click', () => { closeMenu(); openSound(); $('#sound-enable').focus({ preventScroll: true }); });
+  $('#sound-settings-close').addEventListener('click', () => closeSound(true));
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const menuWasOpen = menu?.getAttribute('aria-expanded') === 'true', soundWasOpen = !soundPopover.hidden;
+    if (menuWasOpen) closeMenu();
+    if (soundWasOpen) closeSound(true);
+  });
+  document.addEventListener('click', e => {
+    if (menu?.getAttribute('aria-expanded') === 'true' && !e.target.closest('#mobile-menu-sheet, #menu-toggle')) closeMenu();
+    if (!soundPopover.hidden && !e.target.closest('#sound-control, #sound-settings-mobile')) closeSound();
+  });
+  const toggleLanguage = () => { S.i18n = S.locale === 'en' ? S.ar : S.en; setLocale(S.locale === 'en' ? 'ar' : 'en'); };
+  $('#language-toggle').addEventListener('click', toggleLanguage);
+  $('#language-toggle-mobile').addEventListener('click', () => { closeMenu(); toggleLanguage(); });
   $('#sound-toggle').addEventListener('click', () => toggleSound());
-  $('#sound-settings-open').addEventListener('click', () => { const d = $('#sound-settings'); updateSoundUI(); d.showModal(); $('#sound-title').focus({ preventScroll: true }); });
-  $('#sound-settings-close').addEventListener('click', () => $('#sound-settings').close());
   $('#sound-enable').addEventListener('change', async e => { await soundManager.setEnabled(e.currentTarget.checked); updateSoundUI(); if (soundManager.enabled) soundManager.play('ui'); });
+  $('#sound-effects-enable').addEventListener('change', e => { soundManager.setEffectsEnabled(e.currentTarget.checked); updateSoundUI(); if (soundManager.enabled) soundManager.play('ui'); });
   $('#sound-effects-volume').addEventListener('input', e => soundManager.setEffectsVolume(e.currentTarget.value));
   $('#sound-music-volume').addEventListener('input', e => soundManager.setMusicVolume(e.currentTarget.value));
   $('#sound-ambient').addEventListener('change', async e => { await soundManager.setAmbient(e.currentTarget.checked); updateSoundUI(); });
   $('.filters')?.addEventListener('click', e => { if (e.target.closest('button')) soundManager.play('select'); });
-  $('#open-credits').addEventListener('click', openCredits); $('#open-credits-2').addEventListener('click', openCredits);
+  $('#open-credits').addEventListener('click', openCredits); $('#open-credits-mobile').addEventListener('click', () => { closeMenu(); openCredits(); }); $('#open-credits-2').addEventListener('click', openCredits);
   for (const d of $$('dialog')) {
     d.addEventListener('click', e => { if (e.target === d) d.close(); }); // click on backdrop
     d.addEventListener('close', () => {
       Speech.stop(); if (d.id === 'record') { RecordNarration.stop(); detachPreview('record'); if (S.view === 'story' && steps[S.step]?.t === 'char') attachPreview($('#story-preview'), steps[S.step].c.id, 'story'); }
-      if (d.id === 'sound-settings') $('#sound-settings-open').focus({ preventScroll: true });
-      else S.lastFocus?.focus?.({ preventScroll: true });
+      S.lastFocus?.focus?.({ preventScroll: true });
     });
   }
   addEventListener('pagehide', () => { RecordNarration.dispose(); Speech.stop(); S.scene?.dispose(); S.preview?.dispose(); S.starfield?.dispose(); });

@@ -171,7 +171,7 @@ test('WebGL failure exposes the story fallback', async ({ page }) => {
 
 test('offline app shell is served by service worker', async ({ page, context }) => {
   await page.goto('/'); await page.waitForTimeout(1200);
-  await expect.poll(() => page.evaluate(() => caches.keys())).toContain('athar-static-v8');
+  await expect.poll(() => page.evaluate(() => caches.keys())).toContain('athar-static-v9');
   await page.reload(); await context.setOffline(true); await page.goto('/'); await expect(page.locator('#steles .stele')).toHaveCount(4);
 });
 

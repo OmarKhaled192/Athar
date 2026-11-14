@@ -45,21 +45,45 @@
         </svg>
         <span class="brand-text"><b>ATHAR</b><small>Memorial garden · Mars &amp; Moon</small></span>
       </a>
-      <button type="button" id="menu-toggle" class="menu-toggle" aria-controls="main-nav" aria-expanded="false"
+      <button type="button" id="menu-toggle" class="menu-toggle" aria-controls="mobile-menu-sheet" aria-expanded="false"
         aria-label="Open menu">
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path class="menu-line menu-line-top" d="M4 6h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path class="menu-line menu-line-middle" d="M4 12h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path class="menu-line menu-line-bottom" d="M4 18h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <path class="menu-x" d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
       </button>
       <nav id="main-nav" aria-label="Main">
-        <a href="#home" data-nav="home">Home</a>
-        <a href="#story" data-nav="story">Story</a>
-        <a href="#explore" data-nav="explore">Garden</a>
-        <button type="button" id="open-credits">Credits</button>
-        <button type="button" id="sound-toggle" aria-label="Enable sound" aria-pressed="false">Sound off</button>
-        <button type="button" id="sound-settings-open">Sound settings</button>
-        <button type="button" id="language-toggle" aria-label="Switch to Arabic" lang="ar">العربية</button>
+        <a href="#home" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg><span>Home</span></a>
+        <a href="#story" data-nav="story"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3zM8 4v13a3 3 0 0 0-3 3m6-12h5m-5 4h5"/></svg><span>Story</span></a>
+        <a href="#explore" data-nav="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11m0 0C6 11 5 7 5 4c4 0 7 2 7 7Zm0 4c0-4 3-6 7-6 0 4-2 7-7 7"/></svg><span>Garden</span></a>
       </nav>
+      <div class="header-tools">
+        <div class="sound-control" id="sound-control">
+          <button type="button" id="sound-toggle" class="sound-mute" aria-label="Enable sound" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4z"/><path class="sound-wave" d="M16 9a5 5 0 0 1 0 6m2.5-8.5a8.5 8.5 0 0 1 0 11"/></svg>
+            <span class="sr-only" id="sound-toggle-label">Sound off</span>
+          </button>
+          <button type="button" id="sound-settings-open" class="sound-settings-trigger" aria-controls="sound-settings" aria-expanded="false"><span id="sound-settings-label">Sound</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m3 6 5 5 5-5"/></svg></button>
+          <section class="sound-popover" id="sound-settings" role="group" aria-labelledby="sound-settings-label" hidden>
+            <button type="button" id="sound-settings-close" class="sound-popover-close" aria-label="Close sound settings">✕</button>
+            <label class="sound-option"><span id="sound-enable-label">Sound</span><input id="sound-enable" type="checkbox"></label>
+            <label class="sound-range" for="sound-effects-volume"><span id="sound-effects-label">Effects volume</span><input id="sound-effects-volume" type="range" min="0" max="1" step="0.01" value="0.24"></label>
+            <label class="sound-option"><span id="sound-ambient-label">Music</span><input id="sound-ambient" type="checkbox"></label>
+            <label class="sound-range" for="sound-music-volume"><span id="sound-music-label">Music volume</span><input id="sound-music-volume" type="range" min="0" max="1" step="0.01" value="0.12"></label>
+            <label class="sound-option"><span id="sound-effects-enable-label">Effects</span><input id="sound-effects-enable" type="checkbox" checked></label>
+            <p class="muted small" id="sound-note">Soft synthesized sounds.</p>
+          </section>
+        </div>
+        <button type="button" id="language-toggle" aria-label="Switch to Arabic" lang="ar">العربية</button>
+        <button type="button" id="open-credits">Credits</button>
+      </div>
+      <div class="mobile-menu-sheet" id="mobile-menu-sheet" hidden>
+        <button type="button" id="sound-settings-mobile" aria-controls="sound-settings" aria-expanded="false">⚙ <span id="sound-settings-mobile-label">Sound settings</span></button>
+        <button type="button" id="language-toggle-mobile">◎ <span id="language-menu-label">Language</span><span id="language-menu-current">العربية</span></button>
+        <button type="button" id="open-credits-mobile">ⓘ <span id="credits-mobile-label">Credits</span></button>
+      </div>
     </header>
 
     <main id="main">
@@ -183,20 +207,6 @@
     <!-- CREDITS DIALOG -->
     <dialog id="credits" aria-labelledby="cr-title">
       <div class="rec-wrap" id="cr-body"></div>
-    </dialog>
-
-    <dialog id="sound-settings" aria-labelledby="sound-title">
-      <section class="sound-settings rec-wrap">
-        <button type="button" class="close" id="sound-settings-close" aria-label="Close sound settings">✕</button>
-        <p class="kicker">ATHAR · AUDIO</p>
-        <h2 id="sound-title" tabindex="-1">Sound settings</h2>
-        <p class="muted" id="sound-help">Sound is off until you turn it on. Your choices stay on this device.</p>
-        <label class="sound-option"><input id="sound-enable" type="checkbox"> <span id="sound-enable-label">Enable sound effects</span></label>
-        <label class="sound-range" for="sound-effects-volume"><span id="sound-effects-label">Effects volume</span><input id="sound-effects-volume" type="range" min="0" max="1" step="0.01" value="0.24"></label>
-        <label class="sound-option"><input id="sound-ambient" type="checkbox"> <span id="sound-ambient-label">Quiet space ambience (optional)</span></label>
-        <label class="sound-range" for="sound-music-volume"><span id="sound-music-label">Ambience volume</span><input id="sound-music-volume" type="range" min="0" max="1" step="0.01" value="0.12"></label>
-        <p class="muted small" id="sound-note">Soft synthesized tones; no audio plays unless enabled.</p>
-      </section>
     </dialog>
 
     <script>

@@ -12,10 +12,10 @@ class SoundManager {
     this.cooldowns = new Map();
     this.activeEffects = new Set();
     this.reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
-    this.prefs = { enabled: false, effects: 0.24, music: 0.12, ambient: false };
+    this.prefs = { enabled: false, effectsEnabled: true, effects: 0.24, music: 0.12, ambient: false };
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-      if (saved && typeof saved === 'object') this.prefs = { ...this.prefs, ...saved, effects: clamp(saved.effects), music: clamp(saved.music), enabled: saved.enabled === true, ambient: saved.ambient === true };
+      if (saved && typeof saved === 'object') this.prefs = { ...this.prefs, ...saved, effects: clamp(saved.effects), music: clamp(saved.music), enabled: saved.enabled === true, effectsEnabled: saved.effectsEnabled !== false, ambient: saved.ambient === true };
     } catch { /* Storage may be disabled; audio remains available for this session. */ }
   }
 
@@ -52,6 +52,8 @@ class SoundManager {
     this.prefs.effects = clamp(value); this.persist();
     if (this.effects && this.context) this.effects.gain.setTargetAtTime(this.prefs.effects, this.context.currentTime, 0.06);
   }
+
+  setEffectsEnabled(enabled) { this.prefs.effectsEnabled = !!enabled; this.persist(); }
 
   setMusicVolume(value) {
     this.prefs.music = clamp(value); this.persist(); this.updateAmbience();
@@ -91,7 +93,7 @@ class SoundManager {
 
   play(name) {
     if (this.reducedMotion && (name === 'transition' || name === 'ignition')) return;
-    if (!this.prefs.enabled || !this.context || this.context.state !== 'running' || !this.effects || this.prefs.effects <= 0) return;
+    if (!this.prefs.enabled || !this.prefs.effectsEnabled || !this.context || this.context.state !== 'running' || !this.effects || this.prefs.effects <= 0) return;
     const nowMs = performance.now(), last = this.cooldowns.get(name) || 0;
     if (nowMs - last < 220 || this.activeEffects.size >= 3) return;
     this.cooldowns.set(name, nowMs);
